@@ -27,49 +27,28 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        // Usuario Administrador - Acceso total
+        // Usuario Administrador - Acceso total al sistema
         UserDetails admin = User.builder()
             .username("admin")
             .password(passwordEncoder.encode("admin123"))
-            .roles("ADMIN", "GERENTE", "CONTADOR")
+            .roles("ADMIN")
             .build();
 
-        // Usuario Gerente - Acceso a reportes y gestión
+        // Usuario Gerente - Acceso a gestión y reportes
         UserDetails gerente = User.builder()
             .username("gerente")
             .password(passwordEncoder.encode("gerente123"))
             .roles("GERENTE")
             .build();
 
-        // Usuario Contador - Acceso a reportes financieros
-        UserDetails contador = User.builder()
-            .username("contador")
-            .password(passwordEncoder.encode("contador123"))
-            .roles("CONTADOR")
-            .build();
-
-        // Usuario Ventas - Acceso limitado a ventas
-        UserDetails ventas = User.builder()
-            .username("ventas")
-            .password(passwordEncoder.encode("ventas123"))
-            .roles("VENTAS")
-            .build();
-
-        // Usuario Compras - Acceso a inventario y compras
-        UserDetails compras = User.builder()
-            .username("compras")
-            .password(passwordEncoder.encode("compras123"))
-            .roles("COMPRAS")
-            .build();
-
-        // Usuario Cliente - Acceso público
+        // Usuario Cliente - Acceso básico
         UserDetails cliente = User.builder()
             .username("cliente")
             .password(passwordEncoder.encode("cliente123"))
             .roles("CLIENTE")
             .build();
 
-        return new InMemoryUserDetailsManager(admin, gerente, contador, ventas, compras, cliente);
+        return new InMemoryUserDetailsManager(admin, gerente, cliente);
     }
 
     @Bean
@@ -92,14 +71,14 @@ public class SecurityConfig {
                 // Panel de administración - solo ADMIN
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
-                // Gestión de reportes - GERENTE y CONTADOR
-                .requestMatchers("/reportes/**").hasAnyRole("ADMIN", "GERENTE", "CONTADOR")
+                // Gestión de reportes - ADMIN y GERENTE
+                .requestMatchers("/reportes/**").hasAnyRole("ADMIN", "GERENTE")
                 
-                // Gestión de inventario - ADMIN, GERENTE y COMPRAS
-                .requestMatchers("/inventario/**").hasAnyRole("ADMIN", "GERENTE", "COMPRAS")
+                // Gestión de inventario - ADMIN y GERENTE
+                .requestMatchers("/inventario/**").hasAnyRole("ADMIN", "GERENTE")
                 
-                // Gestión de ventas - ADMIN, GERENTE y VENTAS
-                .requestMatchers("/ventas/**").hasAnyRole("ADMIN", "GERENTE", "VENTAS")
+                // Gestión de ventas - ADMIN y GERENTE
+                .requestMatchers("/ventas/**").hasAnyRole("ADMIN", "GERENTE")
                 
                 // APIs públicas para demostración de patrones
                 .requestMatchers("/api/pagos/**").permitAll()
