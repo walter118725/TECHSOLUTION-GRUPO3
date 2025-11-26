@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSolutions - Tu Tienda de Confianza 🛒</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <!-- Header Atractivo -->
+    <div class="container">
+        <header class="header fade-in">
+            <div class="header-content">
+                <a href="/" class="logo">TechSolutions</a>
+                <nav class="nav">
+                    <a href="/" class="nav-link">🏠 Inicio</a>
+                    <a href="/productos" class="nav-link">📦 Productos</a>
+                    <a href="/carrito" class="nav-link">
+                        <span class="cart-icon">
+                            🛒
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </span>
+                    </a>
+                    <a href="/perfil" class="nav-link">👤 Mi Cuenta</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Mensaje de Bienvenida Cálido -->
+        <div class="welcome-card fade-in">
+            <h1>¡Bienvenido a TechSolutions! 👋</h1>
+            <p>Tu satisfacción es nuestra prioridad. Encuentra los mejores productos con la mejor atención al cliente. ¡Estamos aquí para ayudarte!</p>
+        </div>
+
+        <!-- Características Destacadas -->
+        <div class="features-grid">
+            <div class="feature-card fade-in" style="animation-delay: 0.1s;">
+                <span class="feature-icon">🚚</span>
+                <h3>Envío Rápido</h3>
+                <p>Recibe tus productos en tiempo récord. ¡Tu pedido en la puerta de tu casa!</p>
+            </div>
+            
+            <div class="feature-card fade-in" style="animation-delay: 0.2s;">
+                <span class="feature-icon">💳</span>
+                <h3>Pago Seguro</h3>
+                <p>Múltiples métodos de pago: PayPal, Yape, Plin. ¡Elige el que prefieras!</p>
+            </div>
+            
+            <div class="feature-card fade-in" style="animation-delay: 0.3s;">
+                <span class="feature-icon">🎁</span>
+                <h3>Ofertas Especiales</h3>
+                <p>Descuentos exclusivos y promociones pensadas para ti. ¡Ahorra más!</p>
+            </div>
+            
+            <div class="feature-card fade-in" style="animation-delay: 0.4s;">
+                <span class="feature-icon">🤝</span>
+                <h3>Atención 24/7</h3>
+                <p>Estamos siempre disponibles para resolver tus dudas. ¡Contáctanos!</p>
+            </div>
+        </div>
+
+        <!-- Sección de Productos Destacados -->
+        <section class="products-section fade-in">
+            <h2 class="section-title">✨ Productos Destacados</h2>
+            
+            <!-- Alerta de Bienvenida -->
+            <div class="alert alert-info">
+                <span>¡Explora nuestro catálogo! Tenemos productos increíbles esperándote.</span>
+            </div>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- Los productos se cargarán dinámicamente -->
+                <div class="product-card">
+                    <div class="product-image">💻</div>
+                    <div class="product-info">
+                        <h3 class="product-name">Laptop Gaming Pro</h3>
+                        <div class="product-price">S/ 2,999.00</div>
+                        <div class="product-stock">✅ En stock (15 unidades)</div>
+                        <button class="btn btn-primary btn-block" onclick="addToCart(1)">
+                            Agregar al Carrito 🛒
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">📱</div>
+                    <div class="product-info">
+                        <h3 class="product-name">Smartphone Ultra</h3>
+                        <div class="product-price">S/ 1,499.00</div>
+                        <div class="product-stock">✅ En stock (25 unidades)</div>
+                        <button class="btn btn-primary btn-block" onclick="addToCart(2)">
+                            Agregar al Carrito 🛒
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">🎧</div>
+                    <div class="product-info">
+                        <h3 class="product-name">Audífonos Premium</h3>
+                        <div class="product-price">S/ 299.00</div>
+                        <div class="product-stock">✅ En stock (40 unidades)</div>
+                        <button class="btn btn-primary btn-block" onclick="addToCart(3)">
+                            Agregar al Carrito 🛒
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">⌨️</div>
+                    <div class="product-info">
+                        <h3 class="product-name">Teclado Mecánico</h3>
+                        <div class="product-price">S/ 399.00</div>
+                        <div class="product-stock">✅ En stock (30 unidades)</div>
+                        <button class="btn btn-primary btn-block" onclick="addToCart(4)">
+                            Agregar al Carrito 🛒
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Testimonios -->
+        <section class="products-section fade-in" style="animation-delay: 0.5s;">
+            <h2 class="section-title">💬 Lo Que Dicen Nuestros Clientes</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">⭐⭐⭐⭐⭐</span>
+                    <p><em>"Excelente servicio, productos de calidad y entrega rápida. ¡100% recomendado!"</em></p>
+                    <strong>- María González</strong>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">⭐⭐⭐⭐⭐</span>
+                    <p><em>"La mejor experiencia de compra online. Atención personalizada y precios increíbles."</em></p>
+                    <strong>- Carlos Pérez</strong>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">⭐⭐⭐⭐⭐</span>
+                    <p><em>"Compro aquí desde hace años. Siempre cumplen con lo prometido. ¡Muy satisfecho!"</em></p>
+                    <strong>- Ana López</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Amigable -->
+        <footer class="footer fade-in">
+            <p>💙 TechSolutions © 2025 - Comprometidos con tu satisfacción</p>
+            <p>📧 contacto@techsolutions.com | 📞 (01) 234-5678</p>
+            <p>🏆 Tu tienda de confianza desde 2020</p>
+        </footer>
+    </div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

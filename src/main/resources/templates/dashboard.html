@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TechSolutions</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .welcome-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .welcome-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+        }
+        .welcome-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .roles-badges {
+            margin-top: 15px;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin-right: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+        }
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .card-description {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .logout-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="welcome-header">
+            <h1>👋 Bienvenido, <span th:text="${username}">Usuario</span>!</h1>
+            <p>Panel de control de TechSolutions</p>
+            <div class="roles-badges">
+                <span class="role-badge" th:each="role : ${roles}" th:text="${role.authority}">ROLE</span>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- Productos - Todos pueden ver -->
+            <a th:href="@{/productos}" class="dashboard-card">
+                <div class="card-icon">🛍️</div>
+                <div class="card-title">Catálogo de Productos</div>
+                <div class="card-description">Explora nuestro catálogo completo de productos tecnológicos</div>
+            </a>
+            
+            <!-- Carrito - Solo usuarios autenticados -->
+            <a th:href="@{/carrito}" class="dashboard-card">
+                <div class="card-icon">🛒</div>
+                <div class="card-title">Mi Carrito</div>
+                <div class="card-description">Gestiona tus productos seleccionados y realiza compras</div>
+            </a>
+            
+            <!-- Perfil - Todos los usuarios autenticados -->
+            <a th:href="@{/perfil}" class="dashboard-card">
+                <div class="card-icon">👤</div>
+                <div class="card-title">Mi Perfil</div>
+                <div class="card-description">Actualiza tu información personal y preferencias</div>
+            </a>
+            
+            <!-- Administración - Solo ADMIN -->
+            <a th:href="@{/admin}" class="dashboard-card">
+                <div class="card-icon">⚙️</div>
+                <div class="card-title">Administración</div>
+                <div class="card-description">Panel de administración del sistema completo</div>
+            </a>
+            
+            <!-- Reportes - GERENTE y CONTADOR -->
+            <a th:href="@{/reportes}" class="dashboard-card">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Reportes Financieros</div>
+                <div class="card-description">Consulta reportes y análisis financieros del negocio</div>
+            </a>
+            
+            <!-- Inventario - ADMIN, GERENTE y COMPRAS -->
+            <a th:href="@{/inventario}" class="dashboard-card">
+                <div class="card-icon">📦</div>
+                <div class="card-title">Gestión de Inventario</div>
+                <div class="card-description">Administra el stock y almacenamiento de productos</div>
+            </a>
+            
+            <!-- Ventas - ADMIN, GERENTE y VENTAS -->
+            <a th:href="@{/ventas}" class="dashboard-card">
+                <div class="card-icon">💰</div>
+                <div class="card-title">Gestión de Ventas</div>
+                <div class="card-description">Administra ventas, clientes y transacciones</div>
+            </a>
+        </div>
+        
+        <div class="btn-container">
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="logout-btn">🚪 Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

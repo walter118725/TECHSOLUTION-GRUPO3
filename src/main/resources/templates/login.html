@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TechSolutions</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .login-container {
+            max-width: 450px;
+            margin: 80px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .alert-danger {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+        .test-accounts {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-accounts h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .test-accounts ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .test-accounts li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 13px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .test-accounts li:last-child {
+            border-bottom: none;
+        }
+        .test-accounts strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .link-registro {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .link-registro a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .link-registro a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>🔐 Iniciar Sesión</h2>
+        
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}">Error</span>
+        </div>
+        
+        <div th:if="${message}" class="alert alert-success">
+            <span th:text="${message}">Mensaje</span>
+        </div>
+        
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn-login">Ingresar</button>
+        </form>
+        
+        <div class="link-registro">
+            <p>¿No tienes cuenta? <a th:href="@{/registro}">Regístrate aquí</a></p>
+        </div>
+        
+        <div class="test-accounts">
+            <h3>👥 Cuentas de Prueba Disponibles</h3>
+            <ul>
+                <li><strong>admin</strong> / admin123 - <em>Administrador completo (ADMIN, GERENTE, CONTADOR)</em></li>
+                <li><strong>gerente</strong> / gerente123 - <em>Gerente (GERENTE)</em></li>
+                <li><strong>contador</strong> / contador123 - <em>Contador (CONTADOR)</em></li>
+                <li><strong>ventas</strong> / ventas123 - <em>Personal de Ventas (VENTAS)</em></li>
+                <li><strong>compras</strong> / compras123 - <em>Personal de Compras (COMPRAS)</em></li>
+                <li><strong>cliente</strong> / cliente123 - <em>Cliente (CLIENTE)</em></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
