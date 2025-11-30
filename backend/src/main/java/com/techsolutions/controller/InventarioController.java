@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 /**
  * Controlador REST para gestión de inventario
@@ -20,6 +23,169 @@ public class InventarioController {
     
     @Autowired
     private InventarioService inventarioService;
+    
+    /**
+     * Obtiene todos los productos del inventario
+     * GET /api/inventario/productos
+     */
+    @GetMapping("/productos")
+    public ResponseEntity<List<Map<String, Object>>> obtenerTodosProductos() {
+        List<Producto> productos = inventarioService.obtenerTodosProductos();
+        
+        List<Map<String, Object>> productosResponse = productos.stream()
+            .map(p -> {
+                Map<String, Object> prod = new HashMap<>();
+                prod.put("id", p.getId());
+                prod.put("codigo", p.getCodigo());
+                prod.put("nombre", p.getNombre());
+                prod.put("descripcion", p.getDescripcion());
+                prod.put("precio", p.getPrecio());
+                prod.put("stock", p.getStock());
+                prod.put("stockMinimo", p.getStockMinimo());
+                prod.put("categoria", p.getCategoria() != null ? p.getCategoria().getNombre() : null);
+                prod.put("imagen", p.getImagenUrl());
+                prod.put("activo", p.getActivo());
+                return prod;
+            })
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(productosResponse);
+    }
+    
+    /**
+     * Agrega un nuevo producto al inventario
+     * POST /api/inventario/productos
+     */
+    @PostMapping("/productos")
+    public ResponseEntity<Map<String, Object>> agregarProducto(@RequestBody Map<String, Object> request) {
+        try {
+            String codigo = (String) request.get("codigo");
+            String nombre = (String) request.get("nombre");
+            String descripcion = (String) request.get("descripcion");
+            BigDecimal precio = request.get("precio") != null ? new BigDecimal(String.valueOf(request.get("precio"))) : BigDecimal.ZERO;
+            Integer stock = request.get("stock") != null ? ((Number) request.get("stock")).intValue() : 0;
+            Integer stockMinimo = request.get("stockMinimo") != null ? ((Number) request.get("stockMinimo")).intValue() : 5;
+            String categoria = (String) request.get("categoria");
+            String imagen = (String) request.get("imagen");
+            
+            if (nombre == null || nombre.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "exitoso", false,
+                    "mensaje", "El nombre del producto es requerido"
+                ));
+            }
+            
+            // Generar código si no se proporciona
+            if (codigo == null || codigo.isEmpty()) {
+                codigo = "TECH-" + System.currentTimeMillis();
+            }
+            
+            Producto producto = inventarioService.agregarProducto(
+                codigo, nombre, descripcion, precio, stock, stockMinimo, categoria, imagen
+            );
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("exitoso", true);
+            response.put("mensaje", "✅ Producto agregado exitosamente");
+            response.put("id", producto.getId());
+            response.put("codigo", producto.getCodigo());
+            response.put("nombre", producto.getNombre());
+            response.put("precio", producto.getPrecio());
+            response.put("stock", producto.getStock());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "exitoso", false,
+                "mensaje", e.getMessage()
+            ));
+        }
+    }
+    
+    /**
+     * Actualiza un producto existente
+     * PUT /api/inventario/productos/{id}
+     */
+    @PutMapping("/productos/{id}")
+    public ResponseEntity<Map<String, Object>> actualizarProducto(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> request) {
+        try {
+            String nombre = (String) request.get("nombre");
+            String descripcion = (String) request.get("descripcion");
+            BigDecimal precio = request.get("precio") != null ? new BigDecimal(String.valueOf(request.get("precio"))) : null;
+            Integer stock = request.get("stock") != null ? ((Number) request.get("stock")).intValue() : null;
+            Integer stockMinimo = request.get("stockMinimo") != null ? ((Number) request.get("stockMinimo")).intValue() : null;
+            String categoria = (String) request.get("categoria");
+            String imagen = (String) request.get("imagen");
+            Boolean activo = request.get("activo") != null ? (Boolean) request.get("activo") : null;
+            
+            Producto producto = inventarioService.actualizarProducto(
+                id, nombre, descripcion, precio, stock, stockMinimo, categoria, imagen, activo
+            );
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("exitoso", true);
+            response.put("mensaje", "✏️ Producto actualizado exitosamente");
+            response.put("id", producto.getId());
+            response.put("nombre", producto.getNombre());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "exitoso", false,
+                "mensaje", e.getMessage()
+            ));
+        }
+    }
+    
+    /**
+     * Elimina un producto del inventario (lo desactiva)
+     * DELETE /api/inventario/productos/{id}
+     */
+    @DeleteMapping("/productos/{id}")
+    public ResponseEntity<Map<String, Object>> eliminarProducto(@PathVariable Long id) {
+        try {
+            Producto producto = inventarioService.obtenerProducto(id);
+            String nombreProducto = producto.getNombre();
+            
+            inventarioService.eliminarProducto(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("exitoso", true);
+            response.put("mensaje", "🗑️ Producto '" + nombreProducto + "' eliminado exitosamente");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    /**
+     * Elimina permanentemente un producto del inventario
+     * DELETE /api/inventario/productos/{id}/permanente
+     */
+    @DeleteMapping("/productos/{id}/permanente")
+    public ResponseEntity<Map<String, Object>> eliminarProductoPermanente(@PathVariable Long id) {
+        try {
+            Producto producto = inventarioService.obtenerProducto(id);
+            String nombreProducto = producto.getNombre();
+            
+            inventarioService.eliminarProductoPermanente(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("exitoso", true);
+            response.put("mensaje", "🗑️ Producto '" + nombreProducto + "' eliminado PERMANENTEMENTE");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
     /**
      * Reduce el stock de un producto

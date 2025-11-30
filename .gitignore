@@ -10,3 +10,5 @@ frontend/node/
 backup-resources/
 app.log
 *.log
+app.pid
+cookies.txt

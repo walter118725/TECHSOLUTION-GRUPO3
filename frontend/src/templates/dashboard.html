@@ -1,15 +1,27 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - TechSolutions</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta name="description" content="Dashboard TechSolutions: acceso rápido a catálogo, ventas, inventario y reportes.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.1">
 </head>
 <body>
+    <div class="page-nav">
+        <a href="/" class="nav-brand">💼 TechSolutions</a>
+        <div class="nav-actions">
+            <span style="font-size:13px; color:#666;">Bienvenido, <strong th:text="${#authentication?.name} ?: 'Usuario'">Usuario</strong></span>
+            <form th:action="@{/logout}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn btn-secondary" style="padding:8px 16px; font-size:13px;">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+
     <div class="dashboard-container">
         <div class="welcome-header">
-            <h1>👋 Bienvenido, Usuario!</h1>
+            <h1>👋 Bienvenido, <span th:text="${#authentication?.name} ?: 'Usuario'">Usuario</span>!</h1>
             <p>Panel de control de TechSolutions</p>
         </div>
 
@@ -56,9 +68,8 @@
                 <div class="card-description">Administra ventas, clientes y transacciones</div>
             </a>
         </div>
-
     </div>
 
-    <script src="/static/js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

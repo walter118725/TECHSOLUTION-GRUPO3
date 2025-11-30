@@ -85,6 +85,11 @@ public class WebController {
         return "carrito";
     }
 
+    @GetMapping("/pago")
+    public String pago() {
+        return "pago";
+    }
+
     /**
      * Perfil del usuario (requiere autenticación)
      */
@@ -98,11 +103,13 @@ public class WebController {
 
     /**
      * Panel de administración (solo ADMIN)
+     * Dashboard específico con Gestión de Promociones e Inventario
      */
     @GetMapping("/admin")
     public String admin(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("username", auth.getName());
+        model.addAttribute("roles", auth.getAuthorities());
         return "admin";
     }
 
@@ -134,5 +141,24 @@ public class WebController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("username", auth.getName());
         return "ventas";
+    }
+
+    /**
+     * Dashboard específico del Gerente con gestión de ventas, finanzas e inventario
+     */
+    @GetMapping("/gerente")
+    public String dashboardGerente(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("username", auth.getName());
+        model.addAttribute("roles", auth.getAuthorities());
+        return "gerente/dashboard-gerente";
+    }
+
+    /**
+     * Página de test para Admin (desarrollo)
+     */
+    @GetMapping("/admin-test")
+    public String adminTest() {
+        return "admin-test";
     }
 }

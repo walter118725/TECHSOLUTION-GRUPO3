@@ -53,18 +53,14 @@ public class PagoService {
      */
     public void configurarPasarela(String nombrePasarela, boolean habilitar) {
         PasarelaPago pasarela = pasarelas.get(nombrePasarela.toLowerCase());
-        
-        if (pasarela == null) {
-            throw new IllegalArgumentException("Pasarela no encontrada: " + nombrePasarela);
-        }
-        
-        // Usar reflexión o métodos específicos para cambiar el estado
-        if (pasarela instanceof PayPalAdapter) {
-            ((PayPalAdapter) pasarela).setHabilitada(habilitar);
-        } else if (pasarela instanceof YapeAdapter) {
-            ((YapeAdapter) pasarela).setHabilitada(habilitar);
-        } else if (pasarela instanceof PlinAdapter) {
-            ((PlinAdapter) pasarela).setHabilitada(habilitar);
+
+        // Cambiar estado con switch pattern matching (Java 21)
+        switch (pasarela) {
+            case null -> throw new IllegalArgumentException("Pasarela no encontrada: " + nombrePasarela);
+            case PayPalAdapter p -> p.setHabilitada(habilitar);
+            case YapeAdapter y -> y.setHabilitada(habilitar);
+            case PlinAdapter pl -> pl.setHabilitada(habilitar);
+            default -> {}
         }
     }
     

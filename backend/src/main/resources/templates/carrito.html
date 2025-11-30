@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - TechSolutions 🛒</title>
+    <meta name="description" content="Carrito TechSolutions: revisa tus productos y finaliza tu compra de forma segura.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.2">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-brand">
+                <span class="logo-icon">💼</span>
+                <span class="logo-text">TechSolutions</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="/" class="nav-item">
+                    <i class="icon">🏠</i>
+                    <span>Inicio</span>
+                </a>
+                <a href="/productos" class="nav-item">
+                    <i class="icon">📦</i>
+                    <span>Productos</span>
+                </a>
+                <a href="/carrito" class="nav-item active cart-link">
+                    <i class="icon">🛒</i>
+                    <span>Carrito</span>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <a href="/perfil" class="nav-item">
+                    <i class="icon">👤</i>
+                    <span>Mi Cuenta</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-small">
+        <div class="hero-content">
+            <h1>Tu Carrito de Compras</h1>
+            <p>Revisa y gestiona tus productos seleccionados</p>
+        </div>
+    </section>
+
+    <!-- Carrito Content -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-layout">
+                <!-- Productos en carrito -->
+                <div class="cart-items">
+                    <h2>Productos en tu carrito</h2>
+                    <div id="cartItemsContainer" class="cart-items-list">
+                        <div class="empty-cart">
+                            <div class="empty-icon">🛒</div>
+                            <h3>Tu carrito está vacío</h3>
+                            <p>¡Explora nuestros productos y agrega algo a tu carrito!</p>
+                            <a href="/productos" class="btn btn-primary">Ir a Productos</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de carrito -->
+                <aside class="cart-summary">
+                    <div class="summary-card">
+                        <h3>Resumen del Pedido</h3>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">S/. 0.00</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>IGV (18%):</span>
+                            <span id="taxes">S/. 0.00</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Envío:</span>
+                            <span id="shipping">Gratis</span>
+                        </div>
+                        
+                        <div class="summary-divider"></div>
+                        
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="total">S/. 0.00</span>
+                        </div>
+                        
+                        <button id="checkoutBtn" class="btn btn-primary btn-lg btn-checkout" style="width: 100%; margin-top: 20px;">
+                            💳 Ir a Pagar
+                        </button>
+                        
+                        <a href="/productos" class="btn btn-secondary" style="width: 100%; text-align: center; margin-top: 10px;">
+                            Continuar Comprando
+                        </a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Checkout / Métodos de Pago -->
+    <div id="checkoutModal" class="checkout-modal" style="display: none;">
+        <div class="checkout-modal-overlay" onclick="closeCheckoutModal()"></div>
+        <div class="checkout-modal-content">
+            <!-- Paso 1: Selección de Método de Pago -->
+            <div id="step1" class="checkout-step active">
+                <div class="checkout-header">
+                    <h2>💳 Selecciona tu Método de Pago</h2>
+                    <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
+                </div>
+                
+                <div class="payment-methods">
+                    <div class="payment-method" data-method="paypal" onclick="selectPaymentMethod('paypal')">
+                        <div class="payment-logo paypal-logo">
+                            <svg viewBox="0 0 124 33" class="paypal-svg">
+                                <path fill="#253B80" d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746zM47 13.154c-.374 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.469 1.044.332 1.906z"/>
+                                <path fill="#179BD7" d="M66.654 13.075h-3.275a.57.57 0 0 0-.563.481l-.146.916-.229-.332c-.709-1.029-2.29-1.373-3.868-1.373-3.619 0-6.71 2.741-7.312 6.586-.313 1.918.132 3.752 1.22 5.03.998 1.177 2.426 1.666 4.125 1.666 2.916 0 4.533-1.875 4.533-1.875l-.146.91a.57.57 0 0 0 .562.66h2.95a.95.95 0 0 0 .939-.804l1.77-11.209a.568.568 0 0 0-.56-.656zm-4.565 6.374c-.316 1.871-1.801 3.127-3.695 3.127-.951 0-1.711-.305-2.199-.883-.484-.574-.668-1.392-.514-2.301.295-1.855 1.805-3.152 3.67-3.152.93 0 1.686.309 2.184.892.499.589.697 1.411.554 2.317z"/>
+                                <path fill="#253B80" d="M84.096 13.075h-3.291a.954.954 0 0 0-.787.417l-4.539 6.686-1.924-6.425a.953.953 0 0 0-.912-.678h-3.234a.57.57 0 0 0-.541.754l3.625 10.638-3.408 4.811a.57.57 0 0 0 .465.9h3.287a.949.949 0 0 0 .781-.408l10.946-15.8a.57.57 0 0 0-.468-.895z"/>
+                                <path fill="#179BD7" d="M94.992 6.749h-6.84a.95.95 0 0 0-.938.802l-2.767 17.537a.569.569 0 0 0 .562.658h3.51a.665.665 0 0 0 .656-.562l.785-4.971a.95.95 0 0 1 .938-.803h2.164c4.506 0 7.105-2.18 7.785-6.5.307-1.89.012-3.375-.873-4.415-.971-1.142-2.694-1.746-4.982-1.746zm.789 6.405c-.373 2.454-2.248 2.454-4.062 2.454h-1.031l.725-4.583a.568.568 0 0 1 .562-.481h.473c1.234 0 2.4 0 3.002.704.359.42.468 1.044.331 1.906z"/>
+                                <path fill="#179BD7" d="M115.434 13.075h-3.273a.567.567 0 0 0-.562.481l-.145.916-.23-.332c-.709-1.029-2.289-1.373-3.867-1.373-3.619 0-6.709 2.741-7.311 6.586-.312 1.918.131 3.752 1.219 5.03 1 1.177 2.426 1.666 4.125 1.666 2.916 0 4.533-1.875 4.533-1.875l-.146.91a.57.57 0 0 0 .564.66h2.949a.95.95 0 0 0 .938-.804l1.771-11.209a.571.571 0 0 0-.565-.656zm-4.565 6.374c-.314 1.871-1.801 3.127-3.695 3.127-.949 0-1.711-.305-2.199-.883-.484-.574-.666-1.392-.514-2.301.297-1.855 1.805-3.152 3.67-3.152.93 0 1.686.309 2.184.892.501.589.699 1.411.554 2.317z"/>
+                                <path fill="#253B80" d="M119.295 7.23l-2.807 17.858a.569.569 0 0 0 .562.658h2.822c.469 0 .867-.34.939-.803l2.768-17.536a.57.57 0 0 0-.562-.659h-3.16a.571.571 0 0 0-.562.482z"/>
+                            </svg>
+                        </div>
+                        <div class="payment-info">
+                            <span class="payment-name">PayPal</span>
+                            <span class="payment-desc">Paga de forma segura con tu cuenta PayPal</span>
+                        </div>
+                        <div class="payment-check">✓</div>
+                    </div>
+                    
+                    <div class="payment-method" data-method="yape" onclick="selectPaymentMethod('yape')">
+                        <div class="payment-logo yape-logo">
+                            <div class="yape-circle">
+                                <span class="yape-text">Yape</span>
+                            </div>
+                        </div>
+                        <div class="payment-info">
+                            <span class="payment-name">Yape</span>
+                            <span class="payment-desc">Paga al instante con tu app Yape</span>
+                        </div>
+                        <div class="payment-check">✓</div>
+                    </div>
+                    
+                    <div class="payment-method" data-method="plin" onclick="selectPaymentMethod('plin')">
+                        <div class="payment-logo plin-logo">
+                            <div class="plin-badge">
+                                <span class="plin-text">PLIN</span>
+                            </div>
+                        </div>
+                        <div class="payment-info">
+                            <span class="payment-name">Plin</span>
+                            <span class="payment-desc">Transferencia instantánea con Plin</span>
+                        </div>
+                        <div class="payment-check">✓</div>
+                    </div>
+                </div>
+                
+                <div class="checkout-actions">
+                    <button class="btn btn-secondary" onclick="closeCheckoutModal()">Cancelar</button>
+                    <button id="continueToStep2" class="btn btn-primary" disabled onclick="goToStep2()">
+                        Continuar →
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Paso 2: Tipo de Comprobante -->
+            <div id="step2" class="checkout-step">
+                <div class="checkout-header">
+                    <button class="back-btn" onclick="goToStep1()">← Volver</button>
+                    <h2>🧾 Tipo de Comprobante</h2>
+                    <button class="close-modal-btn" onclick="closeCheckoutModal()">✕</button>
+                </div>
+                
+                <div class="document-types">
+                    <div class="document-type" data-type="boleta" onclick="selectDocumentType('boleta')">
+                        <div class="document-icon">🧾</div>
+                        <div class="document-info">
+                            <span class="document-name">Boleta de Venta</span>
+                            <span class="document-desc">Para consumidores finales (DNI)</span>
+                        </div>
+                        <div class="document-check">✓</div>
+                    </div>
+                    
+                    <div class="document-type" data-type="factura" onclick="selectDocumentType('factura')">
+                        <div class="document-icon">📄</div>
+                        <div class="document-info">
+                            <span class="document-name">Factura Electrónica</span>
+                            <span class="document-desc">Para empresas (RUC requerido)</span>
+                        </div>
+                        <div class="document-check">✓</div>
+                    </div>
+                </div>
+                
+                <!-- Campos adicionales para factura -->
+                <div id="facturaFields" class="factura-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="ruc">RUC de la empresa *</label>
+                        <input type="text" id="ruc" placeholder="Ingresa el RUC (11 dígitos)" maxlength="11" pattern="[0-9]{11}">
+                    </div>
+                    <div class="form-group">
+                        <label for="razonSocial">Razón Social *</label>
+                        <input type="text" id="razonSocial" placeholder="Nombre de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccionFiscal">Dirección Fiscal *</label>
+                        <input type="text" id="direccionFiscal" placeholder="Dirección de la empresa">
+                    </div>
+                </div>
+                
+                <!-- Campos para boleta -->
+                <div id="boletaFields" class="boleta-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="dni">DNI *</label>
+                        <input type="text" id="dni" placeholder="Ingresa tu DNI (8 dígitos)" maxlength="8" pattern="[0-9]{8}">
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreCliente">Nombre Completo *</label>
+                        <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
+                    </div>
+                </div>
+                
+                <!-- Email para envío -->
+                <div class="form-group email-group">
+                    <label for="emailComprobante">📧 Email para enviar comprobante *</label>
+                    <input type="email" id="emailComprobante" placeholder="correo@ejemplo.com" required>
+                </div>
+                
+                <div class="checkout-actions">
+                    <button class="btn btn-secondary" onclick="goToStep1()">← Volver</button>
+                    <button id="continueToStep3" class="btn btn-primary" disabled onclick="processPayment()">
+                        Confirmar Pago 💳
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Paso 3: Procesando Pago -->
+            <div id="step3" class="checkout-step">
+                <div class="processing-payment">
+                    <div class="processing-spinner"></div>
+                    <h3>Procesando tu pago...</h3>
+                    <p id="processingMessage">Conectando con <span id="paymentMethodName">PayPal</span>...</p>
+                </div>
+            </div>
+            
+            <!-- Paso 4: Pago Exitoso -->
+            <div id="step4" class="checkout-step">
+                <div class="payment-success">
+                    <div class="success-icon">✅</div>
+                    <h2>¡Pago Exitoso!</h2>
+                    <p class="success-message">Tu compra ha sido procesada correctamente</p>
+                    
+                    <div class="order-details">
+                        <div class="order-row">
+                            <span>Número de Orden:</span>
+                            <strong id="orderNumber">ORD-2025-XXXXX</strong>
+                        </div>
+                        <div class="order-row">
+                            <span>Método de Pago:</span>
+                            <strong id="paymentMethodUsed">PayPal</strong>
+                        </div>
+                        <div class="order-row">
+                            <span>Comprobante:</span>
+                            <strong id="documentTypeUsed">Boleta</strong>
+                        </div>
+                        <div class="order-row total">
+                            <span>Total Pagado:</span>
+                            <strong id="totalPaid">S/. 0.00</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="email-sent">
+                        <div class="email-icon">📧</div>
+                        <p>Hemos enviado tu <strong><span id="documentSent">boleta</span></strong> al correo:</p>
+                        <p class="email-address" id="emailSent">correo@ejemplo.com</p>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <a href="/productos" class="btn btn-primary">Seguir Comprando 🛍️</a>
+                        <button class="btn btn-secondary" onclick="closeCheckoutModal()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nosotros</h4>
+                <ul>
+                    <li><a href="#">Acerca de TechSolutions</a></li>
+                    <li><a href="#">Nuestra Misión</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Políticas</h4>
+                <ul>
+                    <li><a href="#">Términos de Servicio</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TechSolutions. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js?v=1.0.2"></script>
+    <script src="/js/carrito.js?v=1.0.2"></script>
+</body>
+</html>

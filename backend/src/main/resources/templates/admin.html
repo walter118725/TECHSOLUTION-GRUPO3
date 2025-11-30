@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Panel de Administración - TechSolutions</title>
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.3">
+    <link rel="stylesheet" href="/css/admin.css?v=1.0.1">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="admin-nav">
+        <div class="nav-brand">
+            <span class="brand-icon">💼</span>
+            <span class="brand-text">TechSolutions</span>
+            <span class="role-badge admin">ADMINISTRADOR</span>
+        </div>
+        <div class="nav-actions">
+            <span class="user-info">
+                👤 <span th:text="${#authentication?.name} ?: 'Admin'">Admin</span>
+            </span>
+            <form th:action="@{/logout}" method="post" style="margin:0; display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn-logout">🚪 Cerrar Sesión</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Header Principal -->
+    <header class="admin-header">
+        <div class="header-content">
+            <h1>⚙️ Panel de Administración</h1>
+            <p>Bienvenido, <strong th:text="${#authentication?.name} ?: 'Administrador'">Administrador</strong>. Administración y Gestión de Inventario.</p>
+            <div class="header-date">
+                <span id="currentDate"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs de Navegación -->
+    <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="promociones" onclick="showTab('promociones')">
+            ⚙️ Administración
+        </button>
+        <button class="tab-btn" data-tab="productos" onclick="showTab('productos')">
+            📦 Gestión de Inventario
+        </button>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="admin-main">
+        
+        <!-- ==================== TAB: ADMINISTRACIÓN ==================== -->
+        <section id="tab-promociones" class="tab-content active">
+            <div class="section-header">
+                <h2>⚙️ Administración</h2>
+                <p>Gestiona promociones por mes y año</p>
+            </div>
+
+            <!-- Filtros de Período -->
+            <div class="period-filters">
+                <select id="mesPromocion" class="filter-select">
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11" selected>Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+                <select id="añoPromocion" class="filter-select">
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                </select>
+                <button class="btn btn-primary" onclick="abrirModalNuevaPromocion()">
+                    ➕ Nueva Promoción
+                </button>
+            </div>
+
+            <!-- Cards de Resumen -->
+            <div class="stats-grid">
+                <div class="stat-card promociones-activas">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="promoActivas">3</span>
+                        <span class="stat-label">Promociones Activas</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card promociones-programadas">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="promoProgramadas">2</span>
+                        <span class="stat-label">Programadas</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card promociones-finalizadas">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="promoFinalizadas">8</span>
+                        <span class="stat-label">Finalizadas</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card descuento-promedio">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="descuentoPromedio">15%</span>
+                        <span class="stat-label">Descuento Promedio</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Promociones -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3>📋 Promociones del Período</h3>
+                </div>
+                <table class="data-table promociones-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Descuento</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="promocionesTableBody">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: GESTIÓN DE INVENTARIO ==================== -->
+        <section id="tab-productos" class="tab-content">
+            <div class="section-header">
+                <h2>📦 Gestión de Inventario</h2>
+                <p>Agrega o elimina productos del inventario</p>
+            </div>
+
+            <!-- Acciones -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <input type="text" id="searchProducto" placeholder="🔍 Buscar producto..." class="search-input">
+                </div>
+                <div class="action-buttons">
+                    <select id="filterCategoria" class="filter-select" onchange="filterProductos()">
+                        <option value="">Todas las categorías</option>
+                        <option value="Computadoras">Computadoras</option>
+                        <option value="Accesorios">Accesorios</option>
+                        <option value="Monitores">Monitores</option>
+                        <option value="Audio">Audio</option>
+                        <option value="Almacenamiento">Almacenamiento</option>
+                        <option value="Impresoras">Impresoras</option>
+                    </select>
+                    <button class="btn btn-primary btn-lg" onclick="abrirModalNuevoProducto()">
+                        ➕ Agregar Producto
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumen de Inventario -->
+            <div class="stats-grid">
+                <div class="stat-card total-productos">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalProductosCatalogo">0</span>
+                        <span class="stat-label">Productos en Catálogo</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card productos-activos">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="productosActivos">0</span>
+                        <span class="stat-label">Productos Activos</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card productos-inactivos">
+                    <div class="stat-icon">⏸️</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="productosInactivos">0</span>
+                        <span class="stat-label">Productos Inactivos</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card categorias">
+                    <div class="stat-icon">🏷️</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalCategorias">6</span>
+                        <span class="stat-label">Categorías</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Productos -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3>📋 Catálogo de Productos</h3>
+                </div>
+                <table class="data-table productos-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productosTableBody">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Nueva Promoción -->
+    <div id="modalNuevaPromocion" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Nueva Promoción</h2>
+                <button class="modal-close" onclick="cerrarModalPromocion()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="nombrePromocion">Nombre de la Promoción *</label>
+                    <input type="text" id="nombrePromocion" placeholder="Ej: Black Friday 2025">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="descuentoPromocion">Descuento (%) *</label>
+                        <input type="number" id="descuentoPromocion" min="1" max="90" placeholder="15">
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoPromocion">Tipo</label>
+                        <select id="tipoPromocion">
+                            <option value="porcentaje">Porcentaje</option>
+                            <option value="monto">Monto Fijo</option>
+                            <option value="2x1">2x1</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaInicioPromo">Fecha Inicio *</label>
+                        <input type="date" id="fechaInicioPromo">
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaFinPromo">Fecha Fin *</label>
+                        <input type="date" id="fechaFinPromo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productosPromocion">Aplicar a</label>
+                    <select id="productosPromocion">
+                        <option value="todos">Todos los productos</option>
+                        <option value="categoria">Categoría específica</option>
+                        <option value="seleccionados">Productos seleccionados</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="descripcionPromo">Descripción</label>
+                    <textarea id="descripcionPromo" placeholder="Describe la promoción..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalPromocion()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarPromocion()">
+                    💾 Guardar Promoción
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo/Editar Producto -->
+    <div id="modalProducto" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 id="modalProductoTitulo">📦 Nuevo Producto</h2>
+                <button class="modal-close" onclick="cerrarModalProducto()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="codigoProducto">Código *</label>
+                        <input type="text" id="codigoProducto" placeholder="TECH-XXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreProducto">Nombre del Producto *</label>
+                        <input type="text" id="nombreProducto" placeholder="Nombre del producto">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoriaProducto">Categoría *</label>
+                        <select id="categoriaProducto">
+                            <option value="">Seleccionar...</option>
+                            <option value="Electrónica">Electrónica</option>
+                            <option value="Oficina">Oficina</option>
+                            <option value="Computadoras">Computadoras</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Audio">Audio</option>
+                            <option value="Almacenamiento">Almacenamiento</option>
+                            <option value="Componentes">Componentes</option>
+                            <option value="Impresoras">Impresoras</option>
+                            <option value="Tablets">Tablets</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="precioProducto">Precio (S/.) *</label>
+                        <input type="number" id="precioProducto" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stockProducto">Stock Inicial *</label>
+                        <input type="number" id="stockProducto" min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="stockMinimoProducto">Stock Mínimo</label>
+                        <input type="number" id="stockMinimoProducto" min="0" placeholder="5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="descripcionProducto">Descripción</label>
+                    <textarea id="descripcionProducto" placeholder="Describe el producto..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="imagenProducto">URL de Imagen</label>
+                    <input type="url" id="imagenProducto" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="productoActivo" checked>
+                        <span>Producto activo en catálogo</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalProducto()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarProducto()">
+                    💾 Guardar Producto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Eliminación -->
+    <div id="modalEliminar" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-sm">
+            <div class="modal-header danger">
+                <h2>⚠️ Confirmar Eliminación</h2>
+                <button class="modal-close" onclick="cerrarModalEliminar()">✕</button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="warning-icon">🗑️</div>
+                <p>¿Estás seguro de eliminar este producto del catálogo?</p>
+                <p class="product-name" id="productoEliminarNombre">Nombre del producto</p>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalEliminar()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminar()">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Éxito -->
+    <div id="modalExito" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-sm">
+            <div class="success-animation">
+                <div class="checkmark">✓</div>
+            </div>
+            <h2 id="exitoTitulo">¡Operación Exitosa!</h2>
+            <p id="exitoMensaje">El producto ha sido guardado correctamente.</p>
+            <button class="btn btn-primary" onclick="cerrarModalExito()">Aceptar</button>
+        </div>
+    </div>
+
+    <script src="/js/main.js?v=1.0.2"></script>
+    <script src="/js/admin.js?v=1.0.2"></script>
+</body>
+</html>

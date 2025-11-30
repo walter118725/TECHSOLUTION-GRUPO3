@@ -20,6 +20,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomAuthenticationSuccessHandler successHandler;
+
+    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
+        this.successHandler = successHandler;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -62,23 +68,30 @@ public class SecurityConfig {
                 .requestMatchers("/", "/index", "/login", "/registro", "/error").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 
+                // Página de test para desarrollo
+                .requestMatchers("/admin-test").permitAll()
+                
                 // Catálogo de productos - acceso público
                 .requestMatchers("/productos").permitAll()
                 
                 // Dashboard y perfil - requiere autenticación
-                .requestMatchers("/dashboard", "/carrito", "/perfil").authenticated()
+                .requestMatchers("/dashboard").authenticated()
+                .requestMatchers("/carrito", "/perfil").hasRole("CLIENTE")
                 
                 // Panel de administración - solo ADMIN
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                 
-                // Gestión de reportes - ADMIN y GERENTE
-                .requestMatchers("/reportes/**").hasAnyRole("ADMIN", "GERENTE")
+                // Dashboard del Gerente - solo GERENTE
+                .requestMatchers("/gerente/**").hasRole("GERENTE")
                 
-                // Gestión de inventario - ADMIN y GERENTE
-                .requestMatchers("/inventario/**").hasAnyRole("ADMIN", "GERENTE")
+                // Gestión de reportes - solo GERENTE
+                .requestMatchers("/reportes/**").hasRole("GERENTE")
                 
-                // Gestión de ventas - ADMIN y GERENTE
-                .requestMatchers("/ventas/**").hasAnyRole("ADMIN", "GERENTE")
+                // Gestión de inventario - solo GERENTE
+                .requestMatchers("/inventario/**").hasRole("GERENTE")
+                
+                // Gestión de ventas - solo GERENTE
+                .requestMatchers("/ventas/**").hasRole("GERENTE")
                 
                 // APIs públicas para demostración de patrones
                 .requestMatchers("/api/pagos/**").permitAll()
@@ -97,7 +110,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler(successHandler)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

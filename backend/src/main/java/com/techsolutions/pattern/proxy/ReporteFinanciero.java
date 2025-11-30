@@ -1,6 +1,5 @@
 package com.techsolutions.pattern.proxy;
 
-import com.techsolutions.model.Usuario;
 import java.time.LocalDateTime;
 import java.util.Map;
 

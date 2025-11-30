@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TechSolutions</title>
+    <meta name="description" content="Dashboard TechSolutions: acceso rápido a catálogo, ventas, inventario y reportes.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.1">
+    
+    <!-- Redirección automática para ADMIN -->
+    <script th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        window.location.href = '/admin';
+    </script>
+    <!-- Redirección automática para GERENTE -->
+    <script th:if="${#authorization.expression('hasRole(''GERENTE'')')}">
+        window.location.href = '/gerente';
+    </script>
+</head>
+<body>
+    <div class="page-nav">
+        <a href="/" class="nav-brand">💼 TechSolutions</a>
+        <div class="nav-actions">
+            <span style="font-size:13px; color:#666;">Bienvenido, <strong th:text="${#authentication?.name} ?: 'Usuario'">Usuario</strong></span>
+            <form th:action="@{/logout}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn btn-secondary" style="padding:8px 16px; font-size:13px;">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="welcome-header">
+            <h1>👋 Bienvenido, <span th:text="${#authentication?.name} ?: 'Usuario'">Usuario</span>!</h1>
+            <p>Panel de control de TechSolutions</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- ============ SOLO PARA CLIENTE ============ -->
+            <th:block th:if="${#authorization.expression('hasRole(''CLIENTE'')')}">
+                <!-- Catálogo de Productos -->
+                <a href="/productos" class="dashboard-card">
+                    <div class="card-icon">🛍️</div>
+                    <div class="card-title">Catálogo de Productos</div>
+                    <div class="card-description">Explora nuestro catálogo completo de productos tecnológicos</div>
+                </a>
+
+                <!-- Carrito -->
+                <a href="/carrito" class="dashboard-card">
+                    <div class="card-icon">🛒</div>
+                    <div class="card-title">Mi Carrito</div>
+                    <div class="card-description">Gestiona tus productos seleccionados y realiza compras</div>
+                </a>
+
+                <!-- Perfil -->
+                <a href="/perfil" class="dashboard-card">
+                    <div class="card-icon">👤</div>
+                    <div class="card-title">Mi Perfil</div>
+                    <div class="card-description">Actualiza tu información personal y preferencias</div>
+                </a>
+            </th:block>
+
+            <!-- ============ SOLO PARA ADMIN ============ -->
+            <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <!-- Administración -->
+                <a href="/admin" class="dashboard-card">
+                    <div class="card-icon">⚙️</div>
+                    <div class="card-title">Administración</div>
+                    <div class="card-description">Gestión de Promociones</div>
+                </a>
+
+                <!-- Gestión de Inventario -->
+                <a href="/admin" class="dashboard-card">
+                    <div class="card-icon">📦</div>
+                    <div class="card-title">Gestión de Inventario</div>
+                    <div class="card-description">Agregar y eliminar productos</div>
+                </a>
+            </th:block>
+
+            <!-- ============ SOLO PARA GERENTE ============ -->
+            <th:block th:if="${#authorization.expression('hasRole(''GERENTE'')')}">
+                <!-- Panel de Gerente -->
+                <a href="/gerente" class="dashboard-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Panel de Gerente</div>
+                    <div class="card-description">Gestión de ventas, finanzas e inventario</div>
+                </a>
+
+                <!-- Reportes Financieros -->
+                <a href="/reportes" class="dashboard-card">
+                    <div class="card-icon">📈</div>
+                    <div class="card-title">Reportes Financieros</div>
+                    <div class="card-description">Consulta reportes y análisis financieros del negocio</div>
+                </a>
+
+                <!-- Inventario -->
+                <a href="/inventario" class="dashboard-card">
+                    <div class="card-icon">📦</div>
+                    <div class="card-title">Gestión de Inventario</div>
+                    <div class="card-description">Administra el stock y almacenamiento de productos</div>
+                </a>
+
+                <!-- Ventas -->
+                <a href="/ventas" class="dashboard-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Gestión de Ventas</div>
+                    <div class="card-description">Administra ventas, clientes y transacciones</div>
+                </a>
+            </th:block>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

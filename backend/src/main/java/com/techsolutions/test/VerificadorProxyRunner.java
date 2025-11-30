@@ -79,7 +79,7 @@ public class VerificadorProxyRunner implements CommandLineRunner {
         System.out.println("\n🧪 TEST 3: Usuario COMPRAS intentando acceder (debe ser bloqueado)");
         System.out.println("Usuario: " + compras.getUsername() + " - Roles: " + compras.getRoles());
         try {
-            Map<String, Object> reporte = reporteService.generarReporteUtilidades(
+            reporteService.generarReporteUtilidades(
                 compras,
                 LocalDateTime.now().minusMonths(1),
                 LocalDateTime.now()
@@ -93,7 +93,7 @@ public class VerificadorProxyRunner implements CommandLineRunner {
         System.out.println("\n🧪 TEST 4: Usuario inactivo intentando acceder (debe ser bloqueado)");
         System.out.println("Usuario: " + inactivo.getUsername() + " - Activo: " + inactivo.getActivo());
         try {
-            Map<String, Object> reporte = reporteService.generarReporteVentas(
+            reporteService.generarReporteVentas(
                 inactivo,
                 LocalDateTime.now().minusMonths(1),
                 LocalDateTime.now()
@@ -106,7 +106,7 @@ public class VerificadorProxyRunner implements CommandLineRunner {
         // Test 5: Usuario null (NO debe tener acceso)
         System.out.println("\n🧪 TEST 5: Usuario no autenticado intentando acceder (debe ser bloqueado)");
         try {
-            Map<String, Object> reporte = reporteService.generarReporteVentas(
+            reporteService.generarReporteVentas(
                 null,
                 LocalDateTime.now().minusMonths(1),
                 LocalDateTime.now()

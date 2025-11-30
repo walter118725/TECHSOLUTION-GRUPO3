@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - TechSolutions</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta name="description" content="Administración TechSolutions: panel para gestionar usuarios y productos.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.1">
 </head>
 <body>
     <div class="admin-container">
@@ -19,21 +20,42 @@
                 <ul>
                     <li>📋 Lista de Usuarios</li>
                     <li>➕ Crear Nuevo Usuario</li>
+                    <li>🔑 Gestionar Permisos</li>
+                    <li>📊 Estadísticas de Usuarios</li>
                 </ul>
             </div>
             <div class="admin-card">
                 <h3>🛍️ Gestión de Productos</h3>
                 <ul>
                     <li>📦 Lista Completa de Productos</li>
+                    <li>➕ Agregar Nuevo Producto</li>
+                    <li>🏷️ Gestionar Categorías</li>
+                    <li>💰 Configurar Precios</li>
+                </ul>
+            </div>
+            <div class="admin-card">
+                <h3>📊 Reportes del Sistema</h3>
+                <ul>
+                    <li>💵 Reporte de Ventas</li>
+                    <li>📈 Análisis de Tendencias</li>
+                    <li>👥 Actividad de Usuarios</li>
+                </ul>
+            </div>
+            <div class="admin-card">
+                <h3>🔧 Configuración</h3>
+                <ul>
+                    <li>⚙️ Parámetros del Sistema</li>
+                    <li>💳 Pasarelas de Pago</li>
+                    <li>📧 Notificaciones</li>
                 </ul>
             </div>
         </div>
 
-        <div style="margin-top: 30px; text-align: center;">
+        <div style="margin-top: 40px; text-align: center;">
             <a href="/dashboard" class="btn-back">⬅️ Volver al Dashboard</a>
         </div>
     </div>
 
-    <script src="/static/js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

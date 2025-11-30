@@ -1,6 +1,4 @@
 package com.techsolutions.test;
-
-import com.techsolutions.pattern.adapter.*;
 import com.techsolutions.service.PagoService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

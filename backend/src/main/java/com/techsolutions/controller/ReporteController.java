@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -190,9 +190,7 @@ public class ReporteController {
         
         // Agregar roles
         if (request.getRoles() != null) {
-            for (String rol : request.getRoles()) {
-                usuario.getRoles().add(rol);
-            }
+            usuario.getRoles().addAll(Arrays.asList(request.getRoles()));
         }
         
         return usuario;

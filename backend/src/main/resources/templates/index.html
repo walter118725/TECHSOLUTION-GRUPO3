@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSolutions - Black Friday 🔥 Hasta 50% OFF</title>
+    <meta name="description" content="TechSolutions: Las mejores ofertas en tecnología. Laptops, smartphones, gaming y más con descuentos increíbles.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.2">
+    <style>
+        /* ============================================
+           ESTILOS ESPECIALES PARA LA PÁGINA DE INICIO
+           ============================================ */
+        
+        /* Hero Banner Principal */
+        .hero-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .hero-slide {
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 60px 5%;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 500px;
+            color: white;
+            z-index: 2;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .hero-title span {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .hero-price {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .price-current {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #4ade80;
+        }
+        
+        .price-original {
+            font-size: 1.3rem;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-hero {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-hero-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+        }
+        
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-hero-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-hero-outline:hover {
+            background: white;
+            color: #1a1a2e;
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            max-width: 45%;
+            z-index: 1;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        /* Slider Navigation */
+        .slider-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        /* Categorías con Descuento */
+        .promo-categories {
+            padding: 50px 5%;
+            background: #f8f9fa;
+        }
+        
+        .promo-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .promo-category-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .promo-category-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .promo-category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .promo-category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .promo-category-title {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .promo-category-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #8b1538, #c41e3a);
+            text-align: center;
+        }
+        
+        .promo-discount {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+        
+        .promo-discount-text {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Banner Black Friday */
+        .black-friday-banner {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            padding: 40px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .bf-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .bf-icon {
+            font-size: 2.5rem;
+        }
+        
+        .bf-text h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .bf-text p {
+            color: #aaa;
+        }
+        
+        .bf-center {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .bf-products {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .bf-product-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #444;
+        }
+        
+        .bf-product-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bf-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .bf-title {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 2rem;
+            color: white;
+            text-transform: lowercase;
+        }
+        
+        .bf-title span {
+            color: #ff4444;
+        }
+        
+        .btn-bf {
+            background: white;
+            color: #1a1a1a;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-bf:hover {
+            background: #ff4444;
+            color: white;
+        }
+        
+        /* Productos Destacados */
+        .featured-products {
+            padding: 60px 5%;
+            background: white;
+        }
+        
+        .section-header-promo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-title-promo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        
+        .section-title-promo span {
+            color: #ff4444;
+        }
+        
+        .view-all-btn {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .products-grid-promo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .product-card-promo {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .product-card-promo:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .product-badge-promo {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+        
+        .product-badge-promo.unique {
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+        }
+        
+        .product-image-promo {
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .product-image-promo img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        
+        .product-info-promo {
+            padding: 20px;
+        }
+        
+        .product-brand {
+            color: #666;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-name-promo {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        
+        .product-prices {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ff4444;
+        }
+        
+        .original-price {
+            font-size: 0.95rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .product-labels {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .label {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+        
+        .label-offer {
+            background: #fff0f0;
+            color: #ff4444;
+        }
+        
+        .label-normal {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        /* Beneficios */
+        .benefits-section-promo {
+            padding: 60px 5%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .benefits-grid-promo {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .benefit-card {
+            text-align: center;
+            color: white;
+        }
+        
+        .benefit-icon-promo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .benefit-card p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        /* Newsletter */
+        .newsletter-section-promo {
+            padding: 80px 5%;
+            background: #1a1a2e;
+            text-align: center;
+        }
+        
+        .newsletter-content-promo h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .newsletter-content-promo p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .newsletter-form-promo {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 10px;
+        }
+        
+        .newsletter-form-promo input {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form-promo button {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form-promo button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        .footer-promo {
+            background: #0d0d1a;
+            padding: 60px 5% 30px;
+            color: white;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+        
+        .footer-section-promo h4 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .footer-section-promo ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-section-promo li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-section-promo a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section-promo a:hover {
+            color: white;
+        }
+        
+        .footer-bottom-promo {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 2.5rem; }
+            .hero-image { max-width: 40%; }
+            .promo-categories-grid { grid-template-columns: repeat(2, 1fr); }
+            .benefits-grid-promo { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-slide { flex-direction: column; text-align: center; padding: 40px 5%; }
+            .hero-image { position: relative; max-width: 80%; transform: none; right: auto; top: auto; margin-top: 30px; }
+            .hero-buttons { justify-content: center; }
+            .promo-categories-grid { grid-template-columns: 1fr 1fr; }
+            .black-friday-banner { flex-direction: column; text-align: center; }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+            .benefits-grid-promo { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-content">
+                    <div class="header-left">
+                        <span class="top-link">🔥 BLACK FRIDAY | Hasta 50% OFF en toda la tienda</span>
+                    </div>
+                    <div class="header-right">
+                        <a href="#" class="top-link">📞 Ayuda</a>
+                        <span sec:authorize="isAuthenticated()" class="top-link">
+                            👤 <strong th:text="${#authentication?.name}">Usuario</strong>
+                        </span>
+                        <a sec:authorize="isAuthenticated()" href="/dashboard" class="top-link">Mi Cuenta</a>
+                        <a sec:authorize="!isAuthenticated()" href="/login" class="top-link">Iniciar Sesión</a>
+                        <a sec:authorize="!isAuthenticated()" href="/registro" class="top-link">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-main">
+            <div class="container">
+                <div class="header-content">
+                    <a href="/" class="logo-brand">
+                        <span class="logo-icon">💼</span>
+                        <span class="logo-text">TechSolutions</span>
+                    </a>
+                    
+                    <div class="search-bar">
+                        <input type="search" placeholder="¿Qué estás buscando?" id="mainSearch">
+                        <button class="search-btn">🔍</button>
+                    </div>
+
+                    <nav class="nav-menu">
+                        <a href="/" class="nav-item active">Inicio</a>
+                        <a href="/productos" class="nav-item">Productos</a>
+                        <a sec:authorize="isAuthenticated()" href="/carrito" class="nav-item cart-link">
+                            🛒 <span class="badge" id="cartCount">0</span>
+                        </a>
+                        <a sec:authorize="isAuthenticated()" href="/perfil" class="nav-item">
+                            👤 <span th:text="${#authentication?.name}">Cuenta</span>
+                        </a>
+                        <a sec:authorize="!isAuthenticated()" href="/login" class="nav-item btn-login">
+                            🔐 Ingresar
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Principal -->
+    <section class="hero-banner">
+        <div class="hero-slider" id="heroSlider">
+            <!-- Slide 1: PlayStation 5 -->
+            <div class="hero-slide">
+                <div class="hero-content">
+                    <span class="hero-badge">🔥 OFERTA ÚNICA</span>
+                    <h1 class="hero-title">PlayStation 5<br><span>Digital Edition</span></h1>
+                    <p class="hero-subtitle">+ Gran Turismo 7 + Astro Bot incluidos</p>
+                    <div class="hero-price">
+                        <span class="price-current">S/ 1,899</span>
+                        <span class="price-original">S/ 2,799</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="/productos" class="btn-hero btn-hero-primary">¡Comprar Ahora!</a>
+                        <a href="/productos" class="btn-hero btn-hero-outline">Ver Detalles</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600" alt="PlayStation 5">
+                </div>
+            </div>
+            
+            <!-- Slide 2: MacBook -->
+            <div class="hero-slide" style="display: none;">
+                <div class="hero-content">
+                    <span class="hero-badge">💻 NUEVO</span>
+                    <h1 class="hero-title">MacBook Pro<br><span>M3 Chip</span></h1>
+                    <p class="hero-subtitle">Potencia extraordinaria para profesionales</p>
+                    <div class="hero-price">
+                        <span class="price-current">S/ 6,499</span>
+                        <span class="price-original">S/ 7,999</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="/productos" class="btn-hero btn-hero-primary">¡Comprar Ahora!</a>
+                        <a href="/productos" class="btn-hero btn-hero-outline">Ver Detalles</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" alt="MacBook Pro">
+                </div>
+            </div>
+            
+            <!-- Slide 3: AirPods -->
+            <div class="hero-slide" style="display: none;">
+                <div class="hero-content">
+                    <span class="hero-badge">🎧 BLACK FRIDAY</span>
+                    <h1 class="hero-title">AirPods Pro<br><span>2da Generación</span></h1>
+                    <p class="hero-subtitle">Cancelación activa de ruido mejorada</p>
+                    <div class="hero-price">
+                        <span class="price-current">S/ 899</span>
+                        <span class="price-original">S/ 1,299</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="/productos" class="btn-hero btn-hero-primary">¡Comprar Ahora!</a>
+                        <a href="/productos" class="btn-hero btn-hero-outline">Ver Detalles</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600" alt="AirPods Pro">
+                </div>
+            </div>
+        </div>
+        
+        <div class="slider-nav">
+            <div class="slider-dot active" onclick="goToSlide(0)"></div>
+            <div class="slider-dot" onclick="goToSlide(1)"></div>
+            <div class="slider-dot" onclick="goToSlide(2)"></div>
+        </div>
+    </section>
+
+    <!-- Categorías con Promociones -->
+    <section class="promo-categories">
+        <div class="promo-categories-grid">
+            <div class="promo-category-card">
+                <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400" alt="Laptops">
+                <div class="promo-category-overlay">
+                    <h3 class="promo-category-title">LAPTOPS</h3>
+                </div>
+                <div class="promo-category-bottom">
+                    <div class="promo-discount">40% DSCTO</div>
+                    <div class="promo-discount-text">EN MODELOS SELECCIONADOS</div>
+                </div>
+            </div>
+            
+            <div class="promo-category-card">
+                <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400" alt="Smartphones">
+                <div class="promo-category-overlay">
+                    <h3 class="promo-category-title">SMARTPHONES</h3>
+                </div>
+                <div class="promo-category-bottom">
+                    <div class="promo-discount">30% DSCTO</div>
+                    <div class="promo-discount-text">EN MILES DE PRODUCTOS</div>
+                </div>
+            </div>
+            
+            <div class="promo-category-card">
+                <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400" alt="Gaming">
+                <div class="promo-category-overlay">
+                    <h3 class="promo-category-title">GAMING</h3>
+                </div>
+                <div class="promo-category-bottom">
+                    <div class="promo-discount">25% DSCTO</div>
+                    <div class="promo-discount-text">CONSOLAS Y ACCESORIOS</div>
+                </div>
+            </div>
+            
+            <div class="promo-category-card">
+                <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400" alt="Audio">
+                <div class="promo-category-overlay">
+                    <h3 class="promo-category-title">AUDIO</h3>
+                </div>
+                <div class="promo-category-bottom">
+                    <div class="promo-discount">20% DSCTO</div>
+                    <div class="promo-discount-text">AUDÍFONOS Y PARLANTES</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Black Friday -->
+    <section class="black-friday-banner">
+        <div class="bf-left">
+            <span class="bf-icon">🎁</span>
+            <div class="bf-text">
+                <h3>SETS TECNOLÓGICOS</h3>
+                <p>30% DSCTO. En packs seleccionados</p>
+            </div>
+        </div>
+        
+        <div class="bf-center">
+            <div class="bf-products">
+                <div class="bf-product-thumb">
+                    <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=100" alt="Producto 1">
+                </div>
+                <div class="bf-product-thumb">
+                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=100" alt="Producto 2">
+                </div>
+                <div class="bf-product-thumb">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100" alt="Producto 3">
+                </div>
+            </div>
+        </div>
+        
+        <div class="bf-right">
+            <h2 class="bf-title"><span>black</span> friday</h2>
+            <a href="/productos" class="btn-bf">
+                ¡Ir a productos! 
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Productos Destacados -->
+    <section class="featured-products">
+        <div class="section-header-promo">
+            <h2 class="section-title-promo">Ofertas <span>Imperdibles</span> 🔥</h2>
+            <a href="/productos" class="view-all-btn">Ver todos →</a>
+        </div>
+        
+        <div class="products-grid-promo" id="productsGrid">
+            <!-- Producto 1 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo">-32%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=300" alt="PS5">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">SONY</span>
+                    <h3 class="product-name-promo">PS5 Digital Astro Bot+ Gran Turismo 7</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 1,899</span>
+                        <span class="original-price">S/ 2,799</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-offer">Oportunidad Única</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Producto 2 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo unique">-5%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1589003077984-894e133dabab?w=300" alt="JBL">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">JBL</span>
+                    <h3 class="product-name-promo">Parlante Bluetooth Flip 7</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 379</span>
+                        <span class="original-price">S/ 399</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-normal">P. Normal: S/599</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Producto 3 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo">-56%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300" alt="Samsung Tablet">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">SAMSUNG</span>
+                    <h3 class="product-name-promo">Tablet Galaxy Tab A11</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 399</span>
+                        <span class="original-price">S/ 899</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-offer">P. Oferta</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Producto 4 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo unique">-34%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300" alt="Huawei">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">HUAWEI</span>
+                    <h3 class="product-name-promo">Audífonos Bluetooth Freeclip</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 529</span>
+                        <span class="original-price">S/ 799</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-offer">Oportunidad Única</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Producto 5 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo">-46%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=300" alt="Watch">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">HUAWEI</span>
+                    <h3 class="product-name-promo">Watch Kids 4 Pro Pink</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 379</span>
+                        <span class="original-price">S/ 699</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-offer">P. Oferta</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Producto 6 -->
+            <div class="product-card-promo">
+                <span class="product-badge-promo">-40%</span>
+                <div class="product-image-promo">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300" alt="MacBook">
+                </div>
+                <div class="product-info-promo">
+                    <span class="product-brand">APPLE</span>
+                    <h3 class="product-name-promo">MacBook Air M2 256GB</h3>
+                    <div class="product-prices">
+                        <span class="current-price">S/ 4,199</span>
+                        <span class="original-price">S/ 6,999</span>
+                    </div>
+                    <div class="product-labels">
+                        <span class="label label-offer">Black Friday</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section class="benefits-section-promo">
+        <div class="benefits-grid-promo">
+            <div class="benefit-card">
+                <div class="benefit-icon-promo">🚚</div>
+                <h3>Envío Gratis</h3>
+                <p>En compras mayores a S/. 100</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon-promo">🔒</div>
+                <h3>Compra Segura</h3>
+                <p>100% protegido</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon-promo">↩️</div>
+                <h3>Devoluciones</h3>
+                <p>Hasta 30 días</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon-promo">💳</div>
+                <h3>Múltiples Pagos</h3>
+                <p>Yape, Plin, Tarjetas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section-promo">
+        <div class="newsletter-content-promo">
+            <h2>🎉 ¡No te pierdas las ofertas!</h2>
+            <p>Suscríbete y recibe descuentos exclusivos en tu correo</p>
+            <form class="newsletter-form-promo">
+                <input type="email" placeholder="tu@correo.com" required>
+                <button type="submit">Suscribirme</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-promo">
+        <div class="footer-grid">
+            <div class="footer-section-promo">
+                <h4>Atención al Cliente</h4>
+                <ul>
+                    <li><a href="#">📞 Contacto</a></li>
+                    <li><a href="#">💬 Chat en Vivo</a></li>
+                    <li><a href="#">❓ Preguntas Frecuentes</a></li>
+                    <li><a href="#">📦 Estado de Pedidos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section-promo">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="#">Sobre TechSolutions</a></li>
+                    <li><a href="#">Nuestro Compromiso</a></li>
+                    <li><a href="#">Trabaja con Nosotros</a></li>
+                </ul>
+            </div>
+            <div class="footer-section-promo">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Libro de Reclamaciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section-promo">
+                <h4>Síguenos</h4>
+                <ul>
+                    <li><a href="#">📘 Facebook</a></li>
+                    <li><a href="#">📸 Instagram</a></li>
+                    <li><a href="#">🐦 Twitter</a></li>
+                    <li><a href="#">📺 YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-promo">
+            <p>© 2025 TechSolutions S.A.C. Todos los derechos reservados.</p>
+            <p>RUC: 20123456789 | Lima, Perú 🇵🇪</p>
+        </div>
+    </footer>
+
+    <script>
+        // Slider automático
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        
+        function goToSlide(index) {
+            slides[currentSlide].style.display = 'none';
+            dots[currentSlide].classList.remove('active');
+            
+            currentSlide = index;
+            
+            slides[currentSlide].style.display = 'flex';
+            dots[currentSlide].classList.add('active');
+        }
+        
+        function nextSlide() {
+            goToSlide((currentSlide + 1) % slides.length);
+        }
+        
+        // Cambio automático cada 5 segundos
+        setInterval(nextSlide, 5000);
+        
+        // Inicializar
+        slides.forEach((slide, i) => {
+            if (i !== 0) slide.style.display = 'none';
+        });
+    </script>
+    <script src="/js/main.js?v=1.0.2"></script>
+</body>
+</html>

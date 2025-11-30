@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Simple</title>
+</head>
+<body>
+    <h1>Test Simple de API</h1>
+    
+    <button id="btnTest" style="padding:20px; font-size:20px; cursor:pointer;">
+        CLICK PARA PROBAR
+    </button>
+    
+    <div id="resultado" style="margin-top:20px; padding:20px; background:#f0f0f0;">
+        Esperando...
+    </div>
+
+    <script>
+        document.getElementById('btnTest').addEventListener('click', function() {
+            document.getElementById('resultado').innerHTML = 'Haciendo petición...';
+            
+            fetch('/api/inventario/productos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    codigo: 'SIMPLE-' + Date.now(),
+                    nombre: 'Producto Simple Test',
+                    categoria: 'Electrónica',
+                    precio: 50.00,
+                    stock: 5,
+                    stockMinimo: 2,
+                    descripcion: 'Test simple',
+                    activo: true
+                })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                document.getElementById('resultado').innerHTML = 
+                    '<h2 style="color:green;">¡ÉXITO!</h2>' +
+                    '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            })
+            .catch(function(error) {
+                document.getElementById('resultado').innerHTML = 
+                    '<h2 style="color:red;">ERROR</h2>' +
+                    '<pre>' + error.message + '</pre>';
+            });
+        });
+    </script>
+</body>
+</html>

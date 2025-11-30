@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos - TechSolutions 📦</title>
+    <meta name="description" content="Catálogo TechSolutions: encuentra computadoras, smartphones, accesorios y más.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.1">
+</head>
+<body>
+    <!-- Variable para saber si está autenticado -->
+    <script th:inline="javascript">
+        window.isAuthenticated = [[${#authentication != null && #authentication.name != 'anonymousUser'}]];
+        window.currentUser = [[${#authentication?.name}]] || null;
+    </script>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-brand">
+                <span class="logo-icon">💼</span>
+                <span class="logo-text">TechSolutions</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="/" class="nav-item">
+                    <i class="icon">🏠</i>
+                    <span>Inicio</span>
+                </a>
+                <a href="/productos" class="nav-item active">
+                    <i class="icon">📦</i>
+                    <span>Productos</span>
+                </a>
+                <a href="/carrito" class="nav-item cart-link" sec:authorize="isAuthenticated()">
+                    <i class="icon">🛒</i>
+                    <span>Carrito</span>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <!-- Si está autenticado: mostrar perfil y dashboard -->
+                <a href="/dashboard" class="nav-item" sec:authorize="isAuthenticated()">
+                    <i class="icon">📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/perfil" class="nav-item" sec:authorize="isAuthenticated()">
+                    <i class="icon">👤</i>
+                    <span th:text="${#authentication?.name}">Mi Cuenta</span>
+                </a>
+                <!-- Si NO está autenticado: mostrar login -->
+                <a href="/login" class="nav-item" sec:authorize="!isAuthenticated()">
+                    <i class="icon">🔐</i>
+                    <span>Iniciar Sesión</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Banner de login requerido (solo si no está autenticado) -->
+    <div sec:authorize="!isAuthenticated()" class="login-banner">
+        <div class="container">
+            <div class="login-banner-content">
+                <span class="login-banner-icon">🔐</span>
+                <span class="login-banner-text">Para agregar productos al carrito, debes <a href="/login" class="login-banner-link">iniciar sesión</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-small">
+        <div class="hero-content">
+            <h1>Catálogo de Productos</h1>
+            <p>Descubre nuestra completa selección de artículos tecnológicos</p>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-group">
+                <input type="search" id="searchInput" class="filter-input" placeholder="🔍 Buscar productos...">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="electronica">Electrónica</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="computadoras">Computadoras</option>
+                </select>
+                <select id="priceFilter" class="filter-select">
+                    <option value="">Todos los precios</option>
+                    <option value="0-500">$0 - $500</option>
+                    <option value="500-1000">$500 - $1000</option>
+                    <option value="1000+">$1000+</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos Grid -->
+    <section class="products-grid-section">
+        <div class="container">
+            <h2 class="section-title">Productos Disponibles</h2>
+            <div id="productsContainer" class="products-grid">
+                <div class="loading-spinner">Cargando productos...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nosotros</h4>
+                <ul>
+                    <li><a href="#">Acerca de TechSolutions</a></li>
+                    <li><a href="#">Nuestra Misión</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Políticas</h4>
+                <ul>
+                    <li><a href="#">Términos de Servicio</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TechSolutions. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js?v=1.0.0"></script>
+    <script src="/js/productos.js?v=1.0.0"></script>
+</body>
+</html>

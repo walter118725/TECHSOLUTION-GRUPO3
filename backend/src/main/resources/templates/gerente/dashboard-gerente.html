@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Gerente - TechSolutions</title>
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.3">
+    <link rel="stylesheet" href="/css/gerente.css?v=1.0.0">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="gerente-nav">
+        <div class="nav-brand">
+            <span class="brand-icon">💼</span>
+            <span class="brand-text">TechSolutions</span>
+            <span class="role-badge">GERENTE</span>
+        </div>
+        <div class="nav-actions">
+            <span class="user-info">
+                👤 <span th:text="${#authentication?.name} ?: 'Gerente'">Gerente</span>
+            </span>
+            <form th:action="@{/logout}" method="post" style="margin:0; display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn-logout">🚪 Cerrar Sesión</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Header Principal -->
+    <header class="gerente-header">
+        <div class="header-content">
+            <h1>📊 Panel de Gestión</h1>
+            <p>Bienvenido, <strong th:text="${#authentication?.name} ?: 'Gerente'">Gerente</strong>. Aquí puedes gestionar ventas, finanzas e inventario.</p>
+            <div class="header-date">
+                <span id="currentDate"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs de Navegación -->
+    <div class="gerente-tabs">
+        <button class="tab-btn active" data-tab="ventas" onclick="showTab('ventas')">
+            💰 Gestión de Ventas
+        </button>
+        <button class="tab-btn" data-tab="finanzas" onclick="showTab('finanzas')">
+            📈 Reporte Financiero
+        </button>
+        <button class="tab-btn" data-tab="inventario" onclick="showTab('inventario')">
+            📦 Gestión de Inventario
+        </button>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="gerente-main">
+        
+        <!-- ==================== TAB: GESTIÓN DE VENTAS ==================== -->
+        <section id="tab-ventas" class="tab-content active">
+            <div class="section-header">
+                <h2>💰 Reporte de Ventas</h2>
+                <p>Visualiza las ventas realizadas por semana, mes y año</p>
+            </div>
+
+            <!-- Filtros de Período -->
+            <div class="period-filters">
+                <button class="period-btn active" data-period="semana" onclick="filterVentas('semana')">
+                    📅 Esta Semana
+                </button>
+                <button class="period-btn" data-period="mes" onclick="filterVentas('mes')">
+                    📆 Este Mes
+                </button>
+                <button class="period-btn" data-period="año" onclick="filterVentas('año')">
+                    🗓️ Este Año
+                </button>
+            </div>
+
+            <!-- Cards de Resumen de Ventas -->
+            <div class="stats-grid">
+                <div class="stat-card ventas">
+                    <div class="stat-icon">🛒</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalVentas">0</span>
+                        <span class="stat-label">Ventas Realizadas</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 12%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card ingresos">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalIngresos">S/. 0.00</span>
+                        <span class="stat-label">Ingresos Totales</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 8%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card promedio">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="promedioVenta">S/. 0.00</span>
+                        <span class="stat-label">Promedio por Venta</span>
+                    </div>
+                    <div class="stat-trend neutral">
+                        <span>= 0%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card clientes">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="clientesAtendidos">0</span>
+                        <span class="stat-label">Clientes Atendidos</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 5%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Ventas Recientes -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3>📋 Ventas Recientes</h3>
+                    <button class="btn-export" onclick="exportarVentas()">
+                        📥 Exportar Excel
+                    </button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>N° Venta</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ventasTableBody">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Gráfico de Ventas -->
+            <div class="chart-container">
+                <h3>📈 Tendencia de Ventas</h3>
+                <div class="chart-wrapper" id="ventasChart">
+                    <div class="chart-bars">
+                        <div class="chart-bar" style="--height: 60%;" data-value="Lun"></div>
+                        <div class="chart-bar" style="--height: 80%;" data-value="Mar"></div>
+                        <div class="chart-bar" style="--height: 45%;" data-value="Mié"></div>
+                        <div class="chart-bar" style="--height: 90%;" data-value="Jue"></div>
+                        <div class="chart-bar" style="--height: 70%;" data-value="Vie"></div>
+                        <div class="chart-bar" style="--height: 95%;" data-value="Sáb"></div>
+                        <div class="chart-bar" style="--height: 40%;" data-value="Dom"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: REPORTE FINANCIERO ==================== -->
+        <section id="tab-finanzas" class="tab-content">
+            <div class="section-header">
+                <h2>📈 Reporte Financiero</h2>
+                <p>Análisis financiero completo de la tienda</p>
+            </div>
+
+            <!-- Filtros de Período -->
+            <div class="period-filters">
+                <button class="period-btn active" data-period="semana" onclick="filterFinanzas('semana')">
+                    📅 Esta Semana
+                </button>
+                <button class="period-btn" data-period="mes" onclick="filterFinanzas('mes')">
+                    📆 Este Mes
+                </button>
+                <button class="period-btn" data-period="año" onclick="filterFinanzas('año')">
+                    🗓️ Este Año
+                </button>
+            </div>
+
+            <!-- Cards Financieros -->
+            <div class="stats-grid">
+                <div class="stat-card ingresos-total">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="ingresosBrutos">S/. 0.00</span>
+                        <span class="stat-label">Ingresos Brutos</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 15%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card gastos">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="gastosTotal">S/. 0.00</span>
+                        <span class="stat-label">Gastos Operativos</span>
+                    </div>
+                    <div class="stat-trend down">
+                        <span>↓ 3%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card utilidad">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="utilidadNeta">S/. 0.00</span>
+                        <span class="stat-label">Utilidad Neta</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 22%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card margen">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="margenGanancia">0%</span>
+                        <span class="stat-label">Margen de Ganancia</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>↑ 4%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desglose Financiero -->
+            <div class="financial-breakdown">
+                <div class="breakdown-card">
+                    <h3>💵 Desglose de Ingresos</h3>
+                    <div class="breakdown-items">
+                        <div class="breakdown-item">
+                            <span class="item-label">Ventas de Electrónicos</span>
+                            <span class="item-value">S/. 45,000.00</span>
+                            <div class="item-bar" style="--width: 60%;"></div>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="item-label">Ventas de Accesorios</span>
+                            <span class="item-value">S/. 18,500.00</span>
+                            <div class="item-bar" style="--width: 35%;"></div>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="item-label">Ventas de Computadoras</span>
+                            <span class="item-value">S/. 32,000.00</span>
+                            <div class="item-bar" style="--width: 50%;"></div>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="item-label">Servicios Técnicos</span>
+                            <span class="item-value">S/. 8,200.00</span>
+                            <div class="item-bar" style="--width: 15%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="breakdown-card">
+                    <h3>📉 Desglose de Gastos</h3>
+                    <div class="breakdown-items">
+                        <div class="breakdown-item gastos">
+                            <span class="item-label">Compra de Mercadería</span>
+                            <span class="item-value">S/. 52,000.00</span>
+                            <div class="item-bar gasto" style="--width: 70%;"></div>
+                        </div>
+                        <div class="breakdown-item gastos">
+                            <span class="item-label">Planilla de Personal</span>
+                            <span class="item-value">S/. 15,000.00</span>
+                            <div class="item-bar gasto" style="--width: 25%;"></div>
+                        </div>
+                        <div class="breakdown-item gastos">
+                            <span class="item-label">Alquiler y Servicios</span>
+                            <span class="item-value">S/. 4,500.00</span>
+                            <div class="item-bar gasto" style="--width: 10%;"></div>
+                        </div>
+                        <div class="breakdown-item gastos">
+                            <span class="item-label">Marketing y Publicidad</span>
+                            <span class="item-value">S/. 2,800.00</span>
+                            <div class="item-bar gasto" style="--width: 8%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Exportar -->
+            <div class="export-section">
+                <button class="btn-export-large" onclick="exportarReporteFinanciero()">
+                    📥 Descargar Reporte Financiero Completo (PDF)
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: GESTIÓN DE INVENTARIO ==================== -->
+        <section id="tab-inventario" class="tab-content">
+            <div class="section-header">
+                <h2>📦 Gestión de Inventario</h2>
+                <p>Control de stock y alertas de productos</p>
+            </div>
+
+            <!-- Resumen de Inventario -->
+            <div class="stats-grid">
+                <div class="stat-card productos">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalProductos">0</span>
+                        <span class="stat-label">Total Productos</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card stock-ok">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stockNormal">0</span>
+                        <span class="stat-label">Stock Normal</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card stock-bajo">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stockBajo">0</span>
+                        <span class="stat-label">Stock Bajo (≤5)</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card stock-critico">
+                    <div class="stat-icon">🚨</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stockCritico">0</span>
+                        <span class="stat-label">Stock Crítico (≤2)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas de Stock Crítico -->
+            <div class="alerts-container" id="alertasStock">
+                <h3>🚨 Alertas de Stock Crítico (≤2 unidades)</h3>
+                <div class="alerts-list" id="alertasList">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tabla de Inventario -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3>📋 Lista de Productos</h3>
+                    <div class="table-actions">
+                        <input type="text" id="searchInventario" placeholder="🔍 Buscar producto..." class="search-input">
+                        <select id="filterStock" class="filter-select" onchange="filterInventario()">
+                            <option value="todos">Todos los productos</option>
+                            <option value="normal">Stock Normal</option>
+                            <option value="bajo">Stock Bajo (≤5)</option>
+                            <option value="critico">Stock Crítico (≤2)</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="data-table inventario-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventarioTableBody">
+                        <!-- Se llena dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Solicitar Mercadería -->
+    <div id="modalSolicitud" class="modal-overlay" style="display: none;">
+        <div class="modal-content solicitud-modal">
+            <div class="modal-header">
+                <h2>📦 Solicitar Mercadería</h2>
+                <button class="modal-close" onclick="cerrarModalSolicitud()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="producto-solicitud">
+                    <div class="producto-info">
+                        <span class="producto-emoji" id="solicitudEmoji">📦</span>
+                        <div>
+                            <h4 id="solicitudNombre">Nombre del Producto</h4>
+                            <p id="solicitudCodigo">Código: XXX-000</p>
+                        </div>
+                    </div>
+                    <div class="stock-actual">
+                        <span class="label">Stock Actual:</span>
+                        <span class="value critical" id="solicitudStockActual">0</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cantidadSolicitar">Cantidad a Solicitar *</label>
+                    <input type="number" id="cantidadSolicitar" min="1" value="10" placeholder="Ingrese cantidad">
+                </div>
+                
+                <div class="form-group">
+                    <label for="proveedorSelect">Proveedor</label>
+                    <select id="proveedorSelect">
+                        <option value="proveedor1">Proveedor Principal - Lima</option>
+                        <option value="proveedor2">Distribuidora Tech S.A.</option>
+                        <option value="proveedor3">Importaciones Perú</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="urgenciaSolicitud">Urgencia</label>
+                    <select id="urgenciaSolicitud">
+                        <option value="normal">Normal (5-7 días)</option>
+                        <option value="urgente">Urgente (2-3 días)</option>
+                        <option value="express">Express (24 horas)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notasSolicitud">Notas adicionales</label>
+                    <textarea id="notasSolicitud" placeholder="Agregue notas o instrucciones especiales..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalSolicitud()">Cancelar</button>
+                <button class="btn btn-primary" onclick="enviarSolicitud()">
+                    📤 Enviar Solicitud
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmación de Solicitud -->
+    <div id="modalConfirmacion" class="modal-overlay" style="display: none;">
+        <div class="modal-content confirmacion-modal">
+            <div class="success-animation">
+                <div class="checkmark">✓</div>
+            </div>
+            <h2>¡Solicitud Enviada!</h2>
+            <p>Tu solicitud de mercadería ha sido enviada al proveedor.</p>
+            <div class="solicitud-details">
+                <div class="detail-row">
+                    <span>N° Solicitud:</span>
+                    <strong id="numSolicitud">SOL-2025-XXXXX</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Producto:</span>
+                    <strong id="confirmProducto">-</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Cantidad:</span>
+                    <strong id="confirmCantidad">-</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Tiempo estimado:</span>
+                    <strong id="confirmTiempo">-</strong>
+                </div>
+            </div>
+            <p class="email-notice">📧 Se ha enviado una copia al correo del proveedor y al gerente.</p>
+            <button class="btn btn-primary" onclick="cerrarModalConfirmacion()">Aceptar</button>
+        </div>
+    </div>
+
+    <script src="/js/main.js?v=1.0.2"></script>
+    <script src="/js/gerente.js?v=1.0.0"></script>
+</body>
+</html>

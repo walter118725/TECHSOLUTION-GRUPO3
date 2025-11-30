@@ -4,30 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Productos - TechSolutions 📦</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta name="description" content="Catálogo TechSolutions: encuentra computadoras, smartphones, accesorios y más.">
+    <link rel="stylesheet" href="/css/styles.css?v=1.0.0">
 </head>
 <body>
-    <div class="container">
-        <header class="header fade-in">
-            <div class="header-content">
-                <a href="/" class="logo">TechSolutions</a>
-            </div>
-        </header>
-
-        <div class="welcome-card fade-in">
-            <h1>📦 Nuestro Catálogo Completo</h1>
-            <p>Explora todos nuestros productos. ¡Encuentra exactamente lo que necesitas!</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-brand">
+                <span class="logo-icon">💼</span>
+                <span class="logo-text">TechSolutions</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="/" class="nav-item">
+                    <i class="icon">🏠</i>
+                    <span>Inicio</span>
+                </a>
+                <a href="/productos" class="nav-item active">
+                    <i class="icon">📦</i>
+                    <span>Productos</span>
+                </a>
+                <a href="/carrito" class="nav-item cart-link">
+                    <i class="icon">🛒</i>
+                    <span>Carrito</span>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <a href="/perfil" class="nav-item">
+                    <i class="icon">👤</i>
+                    <span>Mi Cuenta</span>
+                </a>
+            </nav>
         </div>
+    </header>
 
-        <section class="products-section fade-in">
-            <h2 class="section-title">✨ Productos Disponibles</h2>
-        </section>
+    <!-- Hero Section -->
+    <section class="hero-small">
+        <div class="hero-content">
+            <h1>Catálogo de Productos</h1>
+            <p>Descubre nuestra completa selección de artículos tecnológicos</p>
+        </div>
+    </section>
 
-        <footer class="footer fade-in">
-            <p>💙 TechSolutions © 2025</p>
-        </footer>
-    </div>
+    <!-- Filtros -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-group">
+                <input type="search" id="searchInput" class="filter-input" placeholder="🔍 Buscar productos...">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="electronica">Electrónica</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="computadoras">Computadoras</option>
+                </select>
+                <select id="priceFilter" class="filter-select">
+                    <option value="">Todos los precios</option>
+                    <option value="0-500">$0 - $500</option>
+                    <option value="500-1000">$500 - $1000</option>
+                    <option value="1000+">$1000+</option>
+                </select>
+            </div>
+        </div>
+    </section>
 
-    <script src="/static/js/main.js"></script>
+    <!-- Productos Grid -->
+    <section class="products-grid-section">
+        <div class="container">
+            <h2 class="section-title">Productos Disponibles</h2>
+            <div id="productsContainer" class="products-grid">
+                <div class="loading-spinner">Cargando productos...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nosotros</h4>
+                <ul>
+                    <li><a href="#">Acerca de TechSolutions</a></li>
+                    <li><a href="#">Nuestra Misión</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Políticas</h4>
+                <ul>
+                    <li><a href="#">Términos de Servicio</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TechSolutions. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js?v=1.0.0"></script>
+    <script src="/js/productos.js?v=1.0.0"></script>
 </body>
 </html>
