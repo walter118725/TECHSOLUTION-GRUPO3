@@ -82,27 +82,212 @@ backend/
 
 ---
 
-## 🏗️ Separación Frontend / Backend
+## 🏗️ Arquitectura: Frontend & Backend
 
-Para mejorar la organización y trabajar en paralelo en UI y backend, el proyecto se divide en dos partes:
+Estructura clara en **dos carpetas principales**:
 
-- `frontend/` → Contiene los archivos de UI (HTML, CSS, JS). Es independiente y tiene scripts para construir los activos.
-- `backend/` → El backend se mantiene como el proyecto Spring Boot (carpeta principal del repo). El backend sirve los assets estáticos desde `target/classes` durante el empaquetado; `frontend/` es la fuente de la verdad para los assets de UI.
-
-Flujo de trabajo recomendado:
-
-1. Trabaja en `frontend/` durante desarrollo frontend.
-2. Ejecuta en `frontend/`:
-
-```bash
-cd frontend
-npm run build
-# (Opcional) npm run deploy # copia a src/main/resources para que el backend los sirva localmente
+```
+TechSolutions-Proyecto/
+├── frontend/                 # UI: React assets, Thymeleaf templates, CSS/JS
+├── backend/                  # Spring Boot API y aplicación
+├── scripts/                  # Scripts de build y ejecución
+├── .github/workflows/        # CI/CD (GitHub Actions)
+├── docker-compose.yml        # Orquestación de contenedores
+├── Makefile                  # Atajos de build
+└── README.md                 # Este archivo
 ```
 
-3. Arranca el backend con `mvn spring-boot:run` en `backend/` (o usa el wrapper desde root si lo configuras).
+### Frontend (`frontend/`)
+- Plantillas HTML, CSS y JavaScript
+- Build produce `frontend/dist/` (copiado a `backend/src/main/resources` en tiempo de empaquetado)
+- Scripts npm: `build`, `deploy`, `watch`
 
-El proyecto se organiza ahora exclusivamente en dos carpetas principales: `frontend/` (UI, estáticos y plantillas) y `backend/` (Maven + código Java). El `backend/pom.xml` integra la construcción del `frontend` y copia los assets desde `frontend/dist` a `backend/target/classes` en tiempo de empaquetado. Se han eliminado duplicados en `src/main/resources` y los assets ya no se almacenan allí en el repositorio.
+### Backend (`backend/`)
+- Spring Boot 3.5.0 con Java 21
+- Maven para compilación
+- Los assets de `frontend/dist` se integran automáticamente en `target/classes`
+- Servicio en puerto `8080`
+
+---
+
+## 🚀 Inicio Rápido
+
+### Opción 1: Build completo (recomendado)
+
+```bash
+# Desde raíz del proyecto
+./scripts/build.sh
+# Genera backend/target/gestion-ventas-1.0.0.jar
+```
+
+### Opción 2: Makefile
+
+```bash
+make build  # Compila frontend y backend
+make run    # Ejecuta backend (mvn spring-boot:run desde backend/)
+make clean  # Limpia artifacts
+```
+
+### Opción 3: Ejecución local paso a paso
+
+#### Build frontend
+```bash
+cd frontend
+npm ci
+npm run build
+npm run deploy  # Copia assets a backend/src/main/resources
+cd ../backend
+```
+
+#### Build backend
+```bash
+cd backend
+mvn clean install
+mvn spring-boot:run
+# Accede a http://localhost:8080
+```
+
+### Opción 4: Docker & docker-compose
+
+```bash
+# Construir y levantar contenedores
+docker-compose up -d
+
+# Frontend en http://localhost
+# Backend en http://localhost:8080
+```
+
+### Build individual
+
+```bash
+cd backend && mvn -DskipTests package    # Build backend JAR
+cd ../frontend && npm run build          # Build frontend assets
+```
+
+---
+
+## 🔑 Credenciales de Prueba
+
+- **Usuario**: `admin` / `cliente` / (gerente no creado por defecto)
+- **Contraseña**: `admin123`
+
+---
+
+## 📚 Documentación
+
+- `backend/README.md` - Guía del backend
+- `frontend/README.md` - Guía del frontend
+- `backend/docs/DOCUMENTACION_TECNICA.md` - Arquitectura y patrones
+- `backend/docs/VERIFICACION_*.md` - Validación de patrones
+
+---
+
+## 🐳 Docker
+
+### Build imágenes
+
+```bash
+docker build -t techsolutions-backend:latest -f backend/Dockerfile .
+docker build -t techsolutions-frontend:latest -f frontend/Dockerfile .
+```
+
+### Ejecutar con docker-compose
+
+```bash
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
+```
+
+---
+
+## 🧪 Testing
+
+### Ejecutar tests
+
+```bash
+cd backend
+mvn test
+```
+
+### Verificación de patrones
+
+```bash
+cd backend/scripts
+chmod +x *.sh
+./test-observer-inventario.sh
+./test-proxy-reportes.sh
+```
+
+---
+
+## 🔄 CI/CD
+
+GitHub Actions automatiza:
+1. Build del frontend (`npm ci && npm run build`)
+2. Build del backend (`mvn -B -DskipTests package`)
+3. Upload de artifact JAR
+
+Archivo: `.github/workflows/ci.yml`
+
+Se dispara en:
+- Push a `main`
+- Pull requests a `main`
+
+---
+
+## 📦 Dependencias Principales
+
+### Backend
+- Spring Boot 3.5.0, Spring Framework 6.2.7, Spring Security 6.5.0
+- Hibernate 6.6.15, H2 2.3.232
+- Thymeleaf 3.1.3.RELEASE
+
+### Frontend
+- Node.js 20+, npm
+- Nginx (en contenedor)
+
+---
+
+## 🎯 Flujo de Desarrollo Recomendado
+
+1. **Desarrollo local**:
+   ```bash
+   ./scripts/build.sh
+   ./scripts/run-local.sh
+   ```
+
+2. **Cambios en frontend**:
+   ```bash
+   cd frontend && npm run build && npm run deploy
+   cd ../backend && mvn spring-boot:run
+   ```
+
+3. **Cambios en backend**:
+   ```bash
+   cd backend
+   # Edita código Java
+   mvn spring-boot:run
+   ```
+
+4. **Verificar en CI**:
+   - Push a rama
+   - Observa GitHub Actions en `.github/workflows`
+
+---
+
+## 📝 Contribución
+
+1. Crea rama desde `main`
+2. Realiza cambios
+3. Ejecuta tests: `mvn test`
+4. Haz commit con mensaje descriptivo
+5. Push y abre Pull Request
+
+---
+
+**Versión**: 1.0.0  
+**Última actualización**: Noviembre 2025
 
 
 ---
