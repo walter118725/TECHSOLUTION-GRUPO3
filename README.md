@@ -46,7 +46,9 @@ Plataforma integral de gestión de ventas, inventario y reportes financieros ori
 ## 📁 Estructura del Proyecto
 
 ```
-src/main/java/com/techsolutions/
+frontend/
+backend/
+```
 ├── model/                          # Entidades del dominio
 │   ├── Usuario.java
 │   ├── Cliente.java
@@ -100,7 +102,7 @@ npm run build
 
 3. Arranca el backend con `mvn spring-boot:run` en `backend/` (o usa el wrapper desde root si lo configuras).
 
-Si prefieres que yo mueva los archivos del `src/main/resources` a `frontend/` y deje el backend apuntando a la nueva ubicación como parte de un `build`, puedo hacerlo; por ahora dejé copia en `frontend/` y también conservé los archivos en el backend para evitar romper la ejecución inmediata.
+El proyecto se organiza ahora exclusivamente en dos carpetas principales: `frontend/` (UI, estáticos y plantillas) y `backend/` (Maven + código Java). El `backend/pom.xml` integra la construcción del `frontend` y copia los assets desde `frontend/dist` a `backend/target/classes` en tiempo de empaquetado. Se han eliminado duplicados en `src/main/resources` y los assets ya no se almacenan allí en el repositorio.
 
 
 ---
