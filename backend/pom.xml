@@ -113,7 +113,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.12.1</version>
                 <configuration>
-                    <workingDirectory>frontend</workingDirectory>
+                    <workingDirectory>../frontend</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -151,7 +151,7 @@
                             <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>frontend/dist/static</directory>
+                                    <directory>../frontend/dist/static</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -167,7 +167,7 @@
                             <outputDirectory>${project.build.outputDirectory}/templates</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>frontend/dist/templates</directory>
+                                    <directory>../frontend/dist/templates</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
