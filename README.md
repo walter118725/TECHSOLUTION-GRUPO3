@@ -85,7 +85,7 @@ src/main/java/com/techsolutions/
 Para mejorar la organización y trabajar en paralelo en UI y backend, el proyecto se divide en dos partes:
 
 - `frontend/` → Contiene los archivos de UI (HTML, CSS, JS). Es independiente y tiene scripts para construir los activos.
-- `backend/` → El backend se mantiene como el proyecto Spring Boot (carpeta principal del repo). El backend sigue sirviendo los assets estáticos desde `src/main/resources`.
+- `backend/` → El backend se mantiene como el proyecto Spring Boot (carpeta principal del repo). El backend sirve los assets estáticos desde `target/classes` durante el empaquetado; `frontend/` es la fuente de la verdad para los assets de UI.
 
 Flujo de trabajo recomendado:
 
@@ -95,7 +95,7 @@ Flujo de trabajo recomendado:
 ```bash
 cd frontend
 npm run build
-npm run deploy # copia a src/main/resources para que el backend los sirva
+# (Opcional) npm run deploy # copia a src/main/resources para que el backend los sirva localmente
 ```
 
 3. Arranca el backend con `mvn spring-boot:run` en la raíz del repo.
