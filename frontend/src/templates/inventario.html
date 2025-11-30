@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventario - TechSolutions</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="inventario-container">
+        <div class="inventario-header">
+            <h1>📦 Gestión de Inventario</h1>
+            <p>Control y administración de stock de productos</p>
+        </div>
+
+        <div class="inventory-controls">
+            <input type="text" class="search-box" placeholder="🔍 Buscar producto por nombre o código...">
+            <button class="btn-add">➕ Agregar Producto</button>
+        </div>
+
+        <div class="inventory-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PROD001</td>
+                        <td>Laptop Dell Inspiron 15</td>
+                        <td>Laptops</td>
+                        <td>45</td>
+                        <td><span class="stock-badge stock-high">Stock Alto</span></td>
+                        <td>S/ 2,500</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

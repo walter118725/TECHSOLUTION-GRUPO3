@@ -1,0 +1,11 @@
+{
+  "name": "techsolutions-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p dist/static && mkdir -p dist/templates && cp -R src/static/* dist/static/ && cp -R src/templates/* dist/templates/",
+    "deploy": "npm run build && cp -R dist/static/* ../src/main/resources/static/ && cp -R dist/templates/* ../src/main/resources/templates/",
+    "watch": "echo 'Start your looser watch here'"
+  },
+  "devDependencies": {}
+}
