@@ -98,7 +98,7 @@ npm run build
 # (Opcional) npm run deploy # copia a src/main/resources para que el backend los sirva localmente
 ```
 
-3. Arranca el backend con `mvn spring-boot:run` en la raíz del repo.
+3. Arranca el backend con `mvn spring-boot:run` en `backend/` (o usa el wrapper desde root si lo configuras).
 
 Si prefieres que yo mueva los archivos del `src/main/resources` a `frontend/` y deje el backend apuntando a la nueva ubicación como parte de un `build`, puedo hacerlo; por ahora dejé copia en `frontend/` y también conservé los archivos en el backend para evitar romper la ejecución inmediata.
 
@@ -208,12 +208,12 @@ public class GestorInventarioObservable {
 
 ### Compilar el Proyecto
 ```bash
-mvn clean compile
+cd backend && mvn clean compile
 ```
 
 ### Ejecutar la Aplicación
 ```bash
-mvn spring-boot:run
+cd backend && mvn spring-boot:run
 ```
 
 ### Ejecutar Tests
