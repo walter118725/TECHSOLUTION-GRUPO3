@@ -1,0 +1,17 @@
+target/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.vscode/
+*.class
+*.jar
+*.war
+*.nar
+*.zip
+*.tar.gz
+*.rar
+.DS_Store
+*.log
+dependency-reduced-pom.xml
