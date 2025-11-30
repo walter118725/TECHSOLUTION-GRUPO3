@@ -8,3 +8,5 @@ frontend/dist/
 .vscode/
 frontend/node/
 backup-resources/
+app.log
+*.log
