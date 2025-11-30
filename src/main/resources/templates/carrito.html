@@ -1,107 +1,33 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Carrito de Compras - TechSolutions 🛒</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header fade-in">
             <div class="header-content">
                 <a href="/" class="logo">TechSolutions</a>
-                <nav class="nav">
-                    <a href="/" class="nav-link">🏠 Inicio</a>
-                    <a href="/productos" class="nav-link">📦 Productos</a>
-                    <a href="/carrito" class="nav-link">
-                        <span class="cart-icon">
-                            🛒
-                            <span class="cart-badge" id="cartCount">0</span>
-                        </span>
-                    </a>
-                    <a href="/perfil" class="nav-link">👤 Mi Cuenta</a>
-                </nav>
             </div>
         </header>
 
-        <!-- Título -->
         <div class="welcome-card fade-in">
             <h1>🛒 Tu Carrito de Compras</h1>
             <p>Revisa tus productos seleccionados. ¡Estás a un paso de completar tu compra!</p>
         </div>
 
-        <!-- Contenido del Carrito -->
         <section class="products-section fade-in">
-            <div id="cartContent">
-                <!-- Carrito vacío -->
-                <div class="alert alert-info" id="emptyCart">
-                    😊 Tu carrito está vacío. ¡Explora nuestros productos y encuentra lo que necesitas!
-                    <div style="margin-top: 20px;">
-                        <a href="/productos" class="btn btn-primary">Ver Productos 📦</a>
-                    </div>
-                </div>
-
-                <!-- Items del carrito (se carga dinámicamente) -->
-                <div id="cartItems" style="display: none;">
-                    <div class="alert alert-success">
-                        ✅ ¡Excelente elección! Aquí están tus productos seleccionados.
-                    </div>
-                    
-                    <div id="itemsList"></div>
-                    
-                    <!-- Resumen de Compra -->
-                    <div class="feature-card" style="margin-top: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                        <h3 style="color: white; margin-bottom: 20px;">💰 Resumen de tu Compra</h3>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px;">
-                            <span>Subtotal:</span>
-                            <span id="subtotal">S/ 0.00</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px;">
-                            <span>Envío:</span>
-                            <span style="color: #4ade80;">GRATIS 🎉</span>
-                        </div>
-                        <hr style="border-color: rgba(255,255,255,0.3); margin: 20px 0;">
-                        <div style="display: flex; justify-content: space-between; font-size: 24px; font-weight: 700;">
-                            <span>Total:</span>
-                            <span id="total">S/ 0.00</span>
-                        </div>
-                    </div>
-
-                    <!-- Métodos de Pago -->
-                    <div class="feature-card" style="margin-top: 30px;">
-                        <h3 style="color: #4f46e5; margin-bottom: 20px;">💳 Elige tu Método de Pago</h3>
-                        <div class="form-group">
-                            <label class="form-label">Selecciona cómo quieres pagar:</label>
-                            <select class="form-control" id="paymentMethod">
-                                <option value="">-- Selecciona un método --</option>
-                                <option value="paypal">💳 PayPal</option>
-                                <option value="yape">📱 Yape</option>
-                                <option value="plin">📱 Plin</option>
-                            </select>
-                        </div>
-                        
-                        <div class="alert alert-warning" style="margin-top: 20px;">
-                            🔒 Tu información está protegida. Procesamos pagos de forma segura.
-                        </div>
-                        
-                        <button class="btn btn-success btn-block" onclick="procesarCompra()" style="margin-top: 20px; font-size: 18px;">
-                            Completar Compra 🎉
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <div class="alert alert-info">😊 Tu carrito está vacío.</div>
         </section>
 
-        <!-- Footer -->
         <footer class="footer fade-in">
-            <p>💙 TechSolutions © 2025 - Comprometidos con tu satisfacción</p>
-            <p>📧 contacto@techsolutions.com | 📞 (01) 234-5678</p>
+            <p>💙 TechSolutions © 2025</p>
         </footer>
     </div>
 
-    <script th:src="@{/js/main.js}"></script>
-    <script th:src="@{/js/carrito.js}"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

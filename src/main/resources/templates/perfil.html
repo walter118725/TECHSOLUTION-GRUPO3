@@ -1,139 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - TechSolutions</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <style>
-        .perfil-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .perfil-header {
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .perfil-header h1 {
-            margin: 0 0 10px 0;
-            font-size: 32px;
-        }
-        .perfil-avatar {
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            margin: 0 auto 15px;
-        }
-        .perfil-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        .perfil-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        .perfil-card h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            border-bottom: 2px solid #9b59b6;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .info-row {
-            display: flex;
-            padding: 12px 0;
-            border-bottom: 1px solid #ecf0f1;
-        }
-        .info-row:last-child {
-            border-bottom: none;
-        }
-        .info-label {
-            font-weight: 600;
-            color: #7f8c8d;
-            min-width: 150px;
-        }
-        .info-value {
-            color: #2c3e50;
-            flex: 1;
-        }
-        .role-tag {
-            display: inline-block;
-            padding: 4px 12px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-right: 6px;
-            margin-bottom: 6px;
-        }
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        .btn {
-            flex: 1;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <div class="perfil-container">
         <div class="perfil-header">
             <div class="perfil-avatar">👤</div>
-            <h1 th:text="${username}">Usuario</h1>
+            <h1>Usuario</h1>
             <p>Panel de información personal</p>
         </div>
-        
+
         <div class="perfil-content">
             <div class="perfil-card">
                 <h3>📋 Información Personal</h3>
                 <div class="info-row">
                     <div class="info-label">Nombre de Usuario:</div>
-                    <div class="info-value" th:text="${username}">usuario</div>
+                    <div class="info-value">usuario</div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Email:</div>
-                    <div class="info-value" th:text="${username} + '@techsolutions.com'">usuario@techsolutions.com</div>
+                    <div class="info-value">usuario@techsolutions.com</div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Estado de Cuenta:</div>
@@ -141,18 +31,15 @@
                         <span style="color: #27ae60; font-weight: 600;">✓ Activa</span>
                     </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Fecha de Registro:</div>
-                    <div class="info-value">25/11/2025</div>
-                </div>
             </div>
-            
+
             <div class="perfil-card">
                 <h3>🔐 Roles y Permisos</h3>
                 <div class="info-row">
                     <div class="info-label">Roles Asignados:</div>
                     <div class="info-value">
-                        <span class="role-tag" th:each="role : ${roles}" th:text="${role.authority}">ROLE</span>
+                        <span class="role-tag">ADMIN</span>
+                        <span class="role-tag">GERENTE</span>
                     </div>
                 </div>
                 <div class="info-row">
@@ -162,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="perfil-card">
                 <h3>⚙️ Acciones</h3>
                 <div class="btn-group">
@@ -170,13 +57,15 @@
                     <a href="#" class="btn btn-primary">🔒 Cambiar Contraseña</a>
                 </div>
                 <div class="btn-group">
-                    <a th:href="@{/dashboard}" class="btn btn-secondary">⬅️ Volver al Dashboard</a>
-                    <form th:action="@{/logout}" method="post" style="flex: 1; margin: 0;">
+                    <a href="/dashboard" class="btn btn-secondary">⬅️ Volver al Dashboard</a>
+                    <form action="/logout" method="post" style="flex: 1; margin: 0;">
                         <button type="submit" class="btn btn-danger" style="width: 100%;">🚪 Cerrar Sesión</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="/static/js/main.js"></script>
 </body>
 </html>
