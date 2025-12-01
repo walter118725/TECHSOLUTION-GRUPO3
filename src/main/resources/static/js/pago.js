@@ -12,7 +12,7 @@
     resultadoEl.style.display = 'block';
     resultadoEl.className = `alert ${type === 'ok' ? 'alert-success' : 'alert-danger'}`;
     resultadoEl.textContent = message;
-    setTimeout(() => { resultadoEl.style.display = 'none'; }, 5000);
+    setTimeout(() => { resultadoEl.style.display = 'none'; }, 50);
   };
 
   const fetchEstados = async () => {
