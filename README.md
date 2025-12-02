@@ -1,85 +1,116 @@
-# TechSolutions - Sistema de Gestión de Ventas
+# 🛒 TechSolutions - Sistema de Gestión de Ventas
 
-## 📋 Descripción
+Sistema web para tienda de productos tecnológicos con carrito de compras, pasarelas de pago y reportes financieros.
 
-Tienda online de productos tecnológicos con gestión de inventario, ventas y reportes. Desarrollado con Spring Boot y Thymeleaf.
+---
+
+## 🚀 Cómo Ejecutar
+
+```bash
+# 1. Ir a la carpeta del proyecto
+cd backend
+
+# 2. Ejecutar la aplicación
+mvn spring-boot:run
+```
+
+**Abrir en el navegador:** http://localhost:8080
+
+---
+
+## 🔑 Usuarios
+
+| Usuario | Contraseña | Acceso |
+|---------|------------|--------|
+| `admin` | `admin123` | Panel de administración |
+| `gerente` | `gerente123` | Reportes financieros |
+| `cliente` | `cliente123` | Compras |
+
+---
+
+## 📱 Páginas
+
+| URL | Descripción |
+|-----|-------------|
+| http://localhost:8080 | Página de inicio |
+| http://localhost:8080/productos | Catálogo de productos |
+| http://localhost:8080/carrito | Carrito de compras |
+| http://localhost:8080/swagger-ui.html | Documentación API |
 
 ---
 
 ## 🛠️ Tecnologías
 
-| Tecnología | Versión |
-|------------|---------|
-| Java | 21 LTS |
-| Spring Boot | 3.5.8 |
-| Maven | 3.9+ |
-| H2 Database | En memoria |
-| Thymeleaf | Motor de plantillas |
+- **Java 21** + **Spring Boot 3.5.8**
+- **MySQL 8** (base de datos)
+- **Thymeleaf** (vistas HTML)
+- **Swagger** (documentación API)
+- **JUnit 5** (tests)
 
 ---
 
-## 🚀 Ejecutar el Proyecto
+## 🎨 Patrones de Diseño Implementados
+
+| Patrón | Uso | Archivos |
+|--------|-----|----------|
+| **Adapter** | Pasarelas de pago (PayPal, Yape, Plin) | `pattern/adapter/` |
+| **Observer** | Alertas de stock bajo | `pattern/observer/` |
+| **Proxy** | Control de acceso a reportes | `pattern/proxy/` |
+
+---
+
+## 🧪 Tests Unitarios
 
 ```bash
+# Ejecutar todos los tests
 cd backend
-mvn spring-boot:run
+mvn test
 ```
 
-📍 **Acceder a:** http://localhost:8080
+**42 tests** cubriendo:
+- ✅ Modelo Usuario (11 tests)
+- ✅ Patrón Proxy - Control de acceso (10 tests)
+- ✅ Patrón Adapter - Pasarelas de pago (21 tests)
 
 ---
 
-## 🔑 Usuarios de Prueba
-
-| Usuario | Contraseña | Rol |
-|---------|------------|-----|
-| `admin` | `admin123` | Administrador |
-| `gerente` | `gerente123` | Gerente |
-
----
-
-## 📁 Estructura
+## 📁 Estructura del Proyecto
 
 ```
-TechSolutions-Proyecto/
-├── backend/                  # API Spring Boot
-│   └── src/main/
-│       ├── java/            # Código Java
-│       └── resources/
-│           ├── templates/   # Vistas HTML
-│           └── static/      # CSS, JS
-└── frontend/                # Assets adicionales
+backend/
+├── src/main/java/com/techsolutions/
+│   ├── controller/     ← Controladores REST
+│   ├── model/          ← Entidades (Usuario, Producto, Venta)
+│   ├── service/        ← Lógica de negocio
+│   ├── repository/     ← Acceso a datos
+│   ├── pattern/        ← Patrones de diseño
+│   │   ├── adapter/    ← PayPal, Yape, Plin
+│   │   ├── observer/   ← Notificaciones stock
+│   │   └── proxy/      ← Control de acceso
+│   └── dto/            ← Objetos de transferencia
+├── src/main/resources/
+│   ├── templates/      ← Vistas HTML
+│   └── static/         ← CSS, JavaScript
+└── src/test/           ← Tests unitarios
 ```
 
 ---
 
-## 🎨 Patrones de Diseño
+## 📊 API REST
 
-- **Adapter** - Pasarelas de pago (PayPal, Yape, Plin)
-- **Observer** - Notificaciones de stock bajo
-- **Proxy** - Control de acceso a reportes
+Documentación disponible en: http://localhost:8080/swagger-ui.html
 
----
-
-## 📱 Páginas Principales
-
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Inicio con promociones |
-| `/productos` | Catálogo de productos |
-| `/carrito` | Carrito de compras |
-| `/login` | Iniciar sesión |
-| `/admin` | Panel de administrador |
+**Endpoints principales:**
+- `GET /api/productos` - Listar productos
+- `POST /api/pagos/procesar` - Procesar pago
+- `GET /api/reportes/ventas` - Reporte de ventas (solo GERENTE)
 
 ---
 
-## 🧪 Base de Datos
+## 👥 Equipo
 
-Consola H2: http://localhost:8080/h2-console
-- **JDBC URL:** `jdbc:h2:mem:techsolutions`
-- **Usuario:** `sa`
-- **Contraseña:** *(vacía)*
+**TechSolutions - Grupo 3**
 
 ---
 
-**Versión:** 1.0.0 | **Última actualización:** Diciembre 2025
+**Versión:** 1.0.0 | **Diciembre 2025**
