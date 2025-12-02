@@ -3,6 +3,12 @@ package com.techsolutions.controller;
 import com.techsolutions.model.Usuario;
 import com.techsolutions.pattern.proxy.ReporteFinanciero;
 import com.techsolutions.service.ReporteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/reportes")
+@Tag(name = "Reportes", description = "📊 API de Reportes Financieros - Implementa Patrón Proxy para control de acceso por roles (RF3, RF4)")
 public class ReporteController {
 
     @Autowired
@@ -24,10 +31,71 @@ public class ReporteController {
 
     /**
      * Genera reporte de ventas
-     * Solo accesible para usuarios con rol GERENTE o CONTADOR
+     * Solo accesible para usuarios con rol GERENTE
      */
+    @Operation(
+        summary = "📈 Generar reporte de ventas (RF3, RF4)",
+        description = """
+            Genera un reporte detallado de ventas del último mes.
+            
+            **RF3**: El sistema protege el acceso validando credenciales y roles.
+            **RF4**: Solo usuarios con rol GERENTE pueden acceder.
+            
+            El **Patrón Proxy** intercepta la solicitud y valida los permisos antes
+            de permitir el acceso al reporte real.
+            """
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "✅ Reporte generado exitosamente",
+            content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                    {
+                      "exitoso": true,
+                      "mensaje": "✅ Reporte de ventas generado exitosamente",
+                      "usuario": "gerente",
+                      "roles": ["GERENTE"],
+                      "periodo": "Último mes",
+                      "datos": {
+                        "totalVentas": 15,
+                        "montoTotal": 25430.50,
+                        "promedioVenta": 1695.37
+                      }
+                    }
+                    """))),
+        @ApiResponse(responseCode = "403", description = "❌ Acceso denegado - Usuario sin permisos",
+            content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                    {
+                      "exitoso": false,
+                      "mensaje": "❌ Acceso denegado: Solo usuarios con rol de GERENTE pueden acceder",
+                      "usuario": "cliente"
+                    }
+                    """))),
+        @ApiResponse(responseCode = "500", description = "❌ Error interno del servidor")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos del usuario solicitante",
+        required = true,
+        content = @Content(mediaType = "application/json",
+            examples = {
+                @ExampleObject(name = "Usuario GERENTE (✅ Acceso permitido)", value = """
+                    {
+                      "username": "gerente",
+                      "activo": true,
+                      "roles": ["GERENTE"]
+                    }
+                    """),
+                @ExampleObject(name = "Usuario CLIENTE (❌ Acceso denegado)", value = """
+                    {
+                      "username": "cliente",
+                      "activo": true,
+                      "roles": ["CLIENTE"]
+                    }
+                    """)
+            }))
     @PostMapping("/ventas")
-    public ResponseEntity<?> generarReporteVentas(@RequestBody UsuarioRequest request) {
+    public ResponseEntity<?> generarReporteVentas(
+            @RequestBody UsuarioRequest request) {
         try {
             // Crear usuario desde la petición
             Usuario usuario = crearUsuarioDesdeRequest(request);
@@ -66,10 +134,54 @@ public class ReporteController {
 
     /**
      * Genera reporte de ingresos y gastos
-     * Solo accesible para usuarios con rol GERENTE o CONTADOR
+     * Solo accesible para usuarios con rol GERENTE
      */
+    @Operation(
+        summary = "💰 Generar reporte de ingresos y gastos (RF3, RF4)",
+        description = """
+            Genera un reporte de ingresos y gastos para un mes y año específico.
+            
+            **RF3**: El sistema protege el acceso validando credenciales y roles.
+            **RF4**: Solo usuarios con rol GERENTE pueden acceder.
+            """
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "✅ Reporte generado exitosamente",
+            content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                    {
+                      "exitoso": true,
+                      "mensaje": "Reporte de ingresos y gastos generado exitosamente",
+                      "usuario": "gerente",
+                      "roles": ["GERENTE"],
+                      "datos": {
+                        "mes": 11,
+                        "anio": 2024,
+                        "ingresos": 45000.00,
+                        "gastos": 28500.00,
+                        "balance": 16500.00
+                      }
+                    }
+                    """))),
+        @ApiResponse(responseCode = "403", description = "❌ Acceso denegado"),
+        @ApiResponse(responseCode = "500", description = "❌ Error interno")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos del usuario con mes y año",
+        required = true,
+        content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(value = """
+                {
+                  "username": "gerente",
+                  "activo": true,
+                  "roles": ["GERENTE"],
+                  "mes": 11,
+                  "anio": 2024
+                }
+                """)))
     @PostMapping("/ingresos-gastos")
-    public ResponseEntity<?> generarReporteIngresosGastos(@RequestBody UsuarioRequest request) {
+    public ResponseEntity<?> generarReporteIngresosGastos(
+            @RequestBody UsuarioRequest request) {
         try {
             Usuario usuario = crearUsuarioDesdeRequest(request);
             ReporteFinanciero reporte = reporteService.obtenerReporteConProxy(usuario);
@@ -103,10 +215,51 @@ public class ReporteController {
 
     /**
      * Genera reporte de utilidades
-     * Solo accesible para usuarios con rol GERENTE o CONTADOR
+     * Solo accesible para usuarios con rol GERENTE
      */
+    @Operation(
+        summary = "📊 Generar reporte de utilidades (RF3, RF4)",
+        description = """
+            Genera un reporte de utilidades del último trimestre.
+            
+            **RF3**: El sistema protege el acceso validando credenciales y roles.
+            **RF4**: Solo usuarios con rol GERENTE pueden acceder.
+            """
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "✅ Reporte generado exitosamente",
+            content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                    {
+                      "exitoso": true,
+                      "mensaje": "✅ Reporte de utilidades generado exitosamente",
+                      "usuario": "gerente",
+                      "roles": ["GERENTE"],
+                      "periodo": "Último trimestre",
+                      "datos": {
+                        "utilidadBruta": 75000.00,
+                        "utilidadNeta": 52500.00,
+                        "margenUtilidad": "70%"
+                      }
+                    }
+                    """))),
+        @ApiResponse(responseCode = "403", description = "❌ Acceso denegado"),
+        @ApiResponse(responseCode = "500", description = "❌ Error interno")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos del usuario solicitante",
+        required = true,
+        content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(value = """
+                {
+                  "username": "gerente",
+                  "activo": true,
+                  "roles": ["GERENTE"]
+                }
+                """)))
     @PostMapping("/utilidades")
-    public ResponseEntity<?> generarReporteUtilidades(@RequestBody UsuarioRequest request) {
+    public ResponseEntity<?> generarReporteUtilidades(
+            @RequestBody UsuarioRequest request) {
         try {
             Usuario usuario = crearUsuarioDesdeRequest(request);
             ReporteFinanciero reporte = reporteService.obtenerReporteConProxy(usuario);
@@ -141,10 +294,47 @@ public class ReporteController {
 
     /**
      * Exporta reporte a PDF
-     * Solo accesible para usuarios con rol GERENTE o CONTADOR
+     * Solo accesible para usuarios con rol GERENTE
      */
+    @Operation(
+        summary = "📄 Exportar reporte a PDF (RF3, RF4)",
+        description = """
+            Exporta un reporte financiero a formato PDF.
+            
+            **RF3**: El sistema protege el acceso validando credenciales y roles.
+            **RF4**: Solo usuarios con rol GERENTE pueden exportar.
+            """
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "✅ PDF exportado exitosamente",
+            content = @Content(mediaType = "application/json",
+                examples = @ExampleObject(value = """
+                    {
+                      "exitoso": true,
+                      "mensaje": "✅ Reporte exportado a PDF exitosamente",
+                      "usuario": "gerente",
+                      "roles": ["GERENTE"],
+                      "rutaPDF": "/reportes/reporte_ventas_noviembre.pdf"
+                    }
+                    """))),
+        @ApiResponse(responseCode = "403", description = "❌ Acceso denegado"),
+        @ApiResponse(responseCode = "500", description = "❌ Error al exportar")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos del usuario y nombre de archivo",
+        required = true,
+        content = @Content(mediaType = "application/json",
+            examples = @ExampleObject(value = """
+                {
+                  "username": "gerente",
+                  "activo": true,
+                  "roles": ["GERENTE"],
+                  "nombreArchivo": "reporte_ventas_noviembre"
+                }
+                """)))
     @PostMapping("/exportar-pdf")
-    public ResponseEntity<?> exportarAPDF(@RequestBody UsuarioRequest request) {
+    public ResponseEntity<?> exportarAPDF(
+            @RequestBody UsuarioRequest request) {
         try {
             Usuario usuario = crearUsuarioDesdeRequest(request);
             ReporteFinanciero reporte = reporteService.obtenerReporteConProxy(usuario);

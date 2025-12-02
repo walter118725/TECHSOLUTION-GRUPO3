@@ -15,3 +15,9 @@ target/
 .DS_Store
 *.log
 dependency-reduced-pom.xml
+
+# Base de datos H2 local
+data/
+*.db
+*.mv.db
+*.trace.db

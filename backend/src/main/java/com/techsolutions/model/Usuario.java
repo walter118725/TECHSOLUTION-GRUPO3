@@ -67,7 +67,7 @@ public class Usuario {
      * GRASP: Information Expert - centraliza la lógica de permisos
      */
     public boolean puedeAccederReportesFinancieros() {
-        return tieneRol("GERENTE") || tieneRol("CONTADOR");
+        return tieneRol("GERENTE");
     }
     
     // Getters y Setters

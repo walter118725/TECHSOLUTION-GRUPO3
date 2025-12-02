@@ -18,7 +18,7 @@ public class ReporteService {
     
     /**
      * RF3-RF4: Crea un proxy que valida el acceso según el usuario
-     * El Proxy protege el acceso validando roles (GERENTE o CONTADOR)
+     * El Proxy protege el acceso validando rol GERENTE
      */
     public ReporteFinanciero obtenerReporteConProxy(Usuario usuario) {
         return new ProxyReporteFinanciero(usuario);

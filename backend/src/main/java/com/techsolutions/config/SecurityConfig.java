@@ -61,7 +61,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**", "/h2-console/**")
+                .ignoringRequestMatchers("/api/**")
             )
             .authorizeHttpRequests(auth -> auth
                 // Páginas públicas
@@ -98,14 +98,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/reportes/**").permitAll()
                 .requestMatchers("/api/inventario/**").permitAll()
                 
-                // Consola H2
-                .requestMatchers("/h2-console/**").permitAll()
+                // Swagger UI - Documentación API
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                 
                 // Resto requiere autenticación
                 .anyRequest().authenticated()
-            )
-            .headers(headers -> headers
-                .frameOptions(frame -> frame.sameOrigin())
             )
             .formLogin(form -> form
                 .loginPage("/login")

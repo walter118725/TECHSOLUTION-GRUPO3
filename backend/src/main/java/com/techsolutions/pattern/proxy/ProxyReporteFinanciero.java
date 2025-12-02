@@ -8,7 +8,7 @@ import java.util.Map;
  * Proxy para controlar el acceso a reportes financieros
  * Patrón Proxy: Proxy - Controla el acceso al objeto real
  * RF3: Protege el acceso validando credenciales y roles
- * RF4: Solo GERENTE o CONTADOR pueden acceder a reportes completos
+ * RF4: Solo GERENTE puede acceder a reportes completos
  * 
  * GRASP:
  * - Controller: Coordina la validación de seguridad
@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class ProxyReporteFinanciero implements ReporteFinanciero {
     
-    private ReporteFinancieroReal reporteReal;
-    private Usuario usuarioActual;
+    private final ReporteFinancieroReal reporteReal;
+    private final Usuario usuarioActual;
     
     public ProxyReporteFinanciero(Usuario usuarioActual) {
         this.usuarioActual = usuarioActual;
@@ -40,9 +40,8 @@ public class ProxyReporteFinanciero implements ReporteFinanciero {
             throw new SecurityException("Acceso denegado: Usuario inactivo");
         }
         
-        // RF4: Validar que el usuario tenga rol de GERENTE o CONTADOR
-        boolean tieneAcceso = usuarioActual.tieneRol("GERENTE") || 
-                             usuarioActual.tieneRol("CONTADOR");
+        // RF4: Validar que el usuario tenga rol de GERENTE
+        boolean tieneAcceso = usuarioActual.tieneRol("GERENTE");
         
         if (!tieneAcceso) {
             String rolesUsuario = usuarioActual.getRoles().toString();
@@ -50,7 +49,7 @@ public class ProxyReporteFinanciero implements ReporteFinanciero {
                              "' con roles " + rolesUsuario + 
                              " no tiene permisos para acceder a reportes financieros");
             throw new SecurityException(
-                "Acceso denegado: Solo usuarios con rol de GERENTE o CONTADOR " +
+                "Acceso denegado: Solo usuarios con rol de GERENTE " +
                 "pueden acceder a reportes financieros. Sus roles actuales: " + rolesUsuario
             );
         }

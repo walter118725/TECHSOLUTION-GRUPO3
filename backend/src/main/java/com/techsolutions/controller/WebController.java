@@ -114,7 +114,7 @@ public class WebController {
     }
 
     /**
-     * Gestión de reportes (GERENTE y CONTADOR)
+     * Gestión de reportes (solo GERENTE)
      */
     @GetMapping("/reportes")
     public String reportes(Model model) {
