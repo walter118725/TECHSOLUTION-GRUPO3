@@ -99,6 +99,23 @@ public class OpenApiConfig {
                         
                         ---
                         
+                        ## 🧪 Tests Unitarios
+                        
+                        El proyecto cuenta con **42 tests unitarios** que validan:
+                        
+                        | Archivo | Tests | Cobertura |
+                        |---------|-------|-----------|
+                        | `UsuarioTest.java` | 11 | Modelo Usuario, roles y permisos |
+                        | `ProxyReporteFinancieroTest.java` | 10 | RF3/RF4: Control de acceso |
+                        | `PasarelaPagoAdapterTest.java` | 21 | RF1/RF2: Pasarelas de pago |
+                        
+                        ```bash
+                        # Ejecutar tests
+                        cd backend && mvn test
+                        ```
+                        
+                        ---
+                        
                         ## 🔗 Enlaces Útiles
                         
                         - [📂 Repositorio GitHub](https://github.com/walter118725/TECHSOLUTION-GRUPO3)
